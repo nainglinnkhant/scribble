@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { HexAlphaColorPicker } from 'react-colorful'
 
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover'
 import { Label } from '@/components/ui/Label'
 import { Button } from '@/components/ui/Button'
 

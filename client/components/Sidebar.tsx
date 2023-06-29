@@ -1,6 +1,6 @@
-import ColorPicker from './ColorPicker'
-import StrokeWidthSlider from './StrokeWidthSlider'
-import DashGapSlider from './DashGapSlider'
+import ColorPicker from '@/components/ColorPicker'
+import StrokeWidthSlider from '@/components/StrokeWidthSlider'
+import DashGapSlider from '@/components/DashGapSlider'
 
 export default function Sidebar() {
   return (
