@@ -76,3 +76,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Color picker custom pointers */
+.react-colorful__saturation-pointer {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 100% !important;
+}
+
+.react-colorful__hue-pointer,
+.react-colorful__alpha-pointer {
+  width: 14px !important;
+  border-radius: 3px !important;
+}
