@@ -4,7 +4,7 @@ import DashGapSlider from './DashGapSlider'
 
 export default function Sidebar() {
   return (
-    <aside className='border-l px-6 py-8'>
+    <aside className='hidden border-l px-6 py-8 md:block'>
       <div className='flex w-[12.5rem] flex-col gap-8'>
         <ColorPicker />
 

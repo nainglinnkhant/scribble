@@ -7,7 +7,7 @@ export default function Home() {
       <Header />
 
       <div className='flex h-[calc(100vh-3.8rem)]'>
-        <main className='w-[calc(100vw-15.5rem)]'></main>
+        <main className='w-full md:w-[calc(100vw-15.5rem)]'></main>
 
         <Sidebar />
       </div>
