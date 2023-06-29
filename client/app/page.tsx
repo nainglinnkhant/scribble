@@ -6,8 +6,8 @@ export default function Home() {
     <>
       <Header />
 
-      <div className='flex h-[calc(100vh-3.8rem)]'>
-        <main className='w-full md:w-[calc(100vw-15.5rem)]'></main>
+      <div className='h-[calc(100vh-3.8rem)] md:grid md:grid-cols-[minmax(0,1fr)_15.5rem]'>
+        <main className='h-full'></main>
 
         <Sidebar />
       </div>
