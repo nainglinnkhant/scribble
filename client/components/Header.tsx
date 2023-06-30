@@ -20,7 +20,12 @@ export default function Header() {
 
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant='outline' size='icon' className='flex h-9 md:hidden'>
+              <Button
+                variant='outline'
+                size='icon'
+                className='flex h-9 md:hidden'
+                aria-label='Open right panel'
+              >
                 <PanelRightOpen size={20} />
               </Button>
             </SheetTrigger>
