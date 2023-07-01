@@ -2,6 +2,7 @@ import { PanelRightOpen } from 'lucide-react'
 
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/Sheet'
 import { Button } from '@/components/ui/Button'
+import SaveButton from '@/components/SaveButton'
 import ThemeMenu from '@/components/ThemeMenu'
 import RightPanel from '@/components/RightPanel'
 
@@ -12,9 +13,7 @@ export default function Header() {
         <h2 className='text-lg font-medium'>Scribble</h2>
 
         <div className='flex items-center gap-4'>
-          <Button variant='outline' size='sm'>
-            Save
-          </Button>
+          <SaveButton />
 
           <ThemeMenu />
 

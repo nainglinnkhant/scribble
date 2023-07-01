@@ -66,6 +66,7 @@ export default function DrawingCanvas() {
       </Button>
 
       <canvas
+        id='canvas'
         ref={canvasRef}
         onMouseDown={onMouseDown}
         width={0}
