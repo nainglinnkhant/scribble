@@ -56,7 +56,7 @@ export default function DrawingCanvas() {
       <Button
         variant='outline'
         onClick={clear}
-        className='absolute right-[25px] top-[25px] select-none rounded-none rounded-bl border-0 border-b border-l'
+        className='absolute right-[25px] top-[25px] select-none rounded-none rounded-bl rounded-tr-[2.5px] border-0 border-b border-l'
       >
         Clear
       </Button>
