@@ -12,7 +12,9 @@ export default function ColorPicker() {
 
   return (
     <div>
-      <Label htmlFor='strokeColor'>Stroke Color</Label>
+      <Label htmlFor='strokeColor' className='select-none'>
+        Stroke Color
+      </Label>
 
       <Popover>
         <PopoverTrigger asChild className='mt-2 w-full'>
