@@ -1,5 +1,6 @@
 import Header from '@/components/Header'
 import Sidebar from '@/components/Sidebar'
+import DrawingCanvas from '@/components/DrawingCanvas'
 
 export default function Home() {
   return (
@@ -7,7 +8,9 @@ export default function Home() {
       <Header />
 
       <div className='h-[calc(100vh-3.8rem)] md:grid md:grid-cols-[minmax(0,1fr)_15.5rem]'>
-        <main className='h-full'></main>
+        <main className='h-full'>
+          <DrawingCanvas />
+        </main>
 
         <Sidebar />
       </div>
