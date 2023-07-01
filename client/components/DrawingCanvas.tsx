@@ -2,32 +2,36 @@
 
 import { useCallback, useEffect, useRef } from 'react'
 
+import { useCanvasStore } from '@/stores/canvasStore'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
 
 export default function DrawingCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const draw = useCallback(({ ctx, currentPoint, prevPoint }: DrawProps) => {
-    const startPoint = prevPoint ?? currentPoint
-    const { x: currX, y: currY } = currentPoint
-    const lineColor = '#000'
-    const lineWidth = 3
+  const { strokeColor, strokeWidth, dashGap } = useCanvasStore()
 
-    ctx.lineWidth = lineWidth
-    ctx.strokeStyle = lineColor
-    ctx.lineJoin = 'round'
-    ctx.lineCap = 'round'
+  const draw = useCallback(
+    ({ ctx, currentPoint, prevPoint }: DrawProps) => {
+      const startPoint = prevPoint ?? currentPoint
 
-    // Start a new path
-    ctx.beginPath()
-    // Place the cursor from the point the line should be started
-    ctx.moveTo(startPoint.x, startPoint.y)
-    // Draw a line from current cursor position to the provided x,y coordinate
-    ctx.lineTo(currX, currY)
-    // Add stroke to the given path (render the line)
-    ctx.stroke()
-  }, [])
+      ctx.strokeStyle = strokeColor
+      ctx.lineWidth = strokeWidth[0]
+      ctx.setLineDash(dashGap)
+      ctx.lineJoin = 'round'
+      ctx.lineCap = 'round'
+
+      // Start a new path
+      ctx.beginPath()
+      // Place the cursor from the point the line should be started
+      ctx.moveTo(startPoint.x, startPoint.y)
+      // Draw a line from current cursor position to the provided x,y coordinate
+      ctx.lineTo(currentPoint.x, currentPoint.y)
+      // Add stroke to the given path (render the line)
+      ctx.stroke()
+    },
+    [strokeColor, strokeWidth, dashGap]
+  )
 
   const { canvasRef, onMouseDown, clear } = useDraw(draw)
 

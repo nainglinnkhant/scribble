@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-
+import { useCanvasStore } from '@/stores/canvasStore'
 import { Slider } from '@/components/ui/Slider'
 import { Label } from '@/components/ui/Label'
 
 export default function DashGapSlider() {
-  const [dashGap, setDashGap] = useState([0])
+  const { dashGap, setDashGap } = useCanvasStore()
 
   return (
     <div>
@@ -18,7 +17,7 @@ export default function DashGapSlider() {
 
       <Slider
         id='strokeWidth'
-        min={1}
+        min={0}
         max={50}
         step={1}
         value={dashGap}
