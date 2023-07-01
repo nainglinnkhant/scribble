@@ -33,7 +33,7 @@ export default function DrawingCanvas() {
     [strokeColor, strokeWidth, dashGap]
   )
 
-  const { canvasRef, onMouseDown, clear } = useDraw(draw)
+  const { canvasRef, onInteractStart, clear } = useDraw(draw)
 
   useEffect(() => {
     const setCanvasDimensions = () => {
@@ -68,7 +68,8 @@ export default function DrawingCanvas() {
       <canvas
         id='canvas'
         ref={canvasRef}
-        onMouseDown={onMouseDown}
+        onMouseDown={onInteractStart}
+        onTouchStart={onInteractStart}
         width={0}
         height={0}
         className='rounded border bg-white'
