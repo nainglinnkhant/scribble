@@ -46,10 +46,6 @@ export default function DrawingCanvas() {
     }
 
     setCanvasDimensions()
-
-    window.addEventListener('resize', setCanvasDimensions)
-
-    return () => window.removeEventListener('resize', setCanvasDimensions)
   }, [])
 
   return (
