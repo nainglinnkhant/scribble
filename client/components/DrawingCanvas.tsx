@@ -1,13 +1,16 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useCanvasStore } from '@/stores/canvasStore'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function DrawingCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const [isCanvasLoaded, setIsCanvasLoaded] = useState(false)
 
   const { strokeColor, strokeWidth, dashGap } = useCanvasStore()
 
@@ -46,6 +49,7 @@ export default function DrawingCanvas() {
     }
 
     setCanvasDimensions()
+    setIsCanvasLoaded(true)
   }, [])
 
   return (
@@ -60,6 +64,10 @@ export default function DrawingCanvas() {
       >
         Clear
       </Button>
+
+      {!isCanvasLoaded && (
+        <Skeleton className='absolute h-[calc(100%-50px)] w-[calc(100%-50px)]' />
+      )}
 
       <canvas
         id='canvas'
