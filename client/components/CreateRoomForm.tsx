@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -24,6 +25,8 @@ interface CreateRoomFormProps {
 type CreatRoomForm = z.infer<typeof createRoomSchema>
 
 export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
+  const router = useRouter()
+
   const form = useForm<CreatRoomForm>({
     resolver: zodResolver(createRoomSchema),
     defaultValues: {
@@ -31,8 +34,8 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
     },
   })
 
-  function onSubmit(values: CreatRoomForm) {
-    console.log(values)
+  function onSubmit() {
+    router.replace(`/${roomId}`)
   }
 
   return (
