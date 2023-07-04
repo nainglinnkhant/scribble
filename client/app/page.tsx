@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/Card'
 import { Separator } from '@/components/ui/Separator'
+import ThemeMenuButton from '@/components/ThemeMenuButton'
 import CreateRoomForm from '@/components/CreateRoomForm'
 import JoinRoomButtoon from '@/components/JoinRoomButton'
 
@@ -15,7 +16,9 @@ export default function Home() {
   const roomId = nanoid()
 
   return (
-    <div className='flex h-screen w-full items-start justify-center pt-[10vh]'>
+    <div className='flex h-screen w-full items-start justify-center pt-[13vh]'>
+      <ThemeMenuButton className='fixed right-[5vw] top-5 md:right-5' />
+
       <Card className='w-[90vw] max-w-[400px]'>
         <CardHeader>
           <CardTitle>Scribble</CardTitle>
