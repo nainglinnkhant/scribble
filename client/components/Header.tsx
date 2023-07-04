@@ -3,7 +3,7 @@ import { PanelRightOpen } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/Sheet'
 import { Button } from '@/components/ui/Button'
 import SaveButton from '@/components/SaveButton'
-import ThemeMenu from '@/components/ThemeMenu'
+import ThemeMenuButton from '@/components/ThemeMenuButton'
 import RightPanel from '@/components/RightPanel'
 
 export default function Header() {
@@ -15,7 +15,7 @@ export default function Header() {
         <div className='flex items-center gap-3 md:gap-4'>
           <SaveButton />
 
-          <ThemeMenu />
+          <ThemeMenuButton />
 
           <Sheet>
             <SheetTrigger asChild>

@@ -13,13 +13,19 @@ import {
 } from '@/components/ui/DropdownMenu'
 import { Button } from '@/components/ui/Button'
 
-const ThemeMenu = () => {
+const ThemeMenuButton = (props: React.HTMLAttributes<HTMLButtonElement>) => {
   const { theme, setTheme } = useTheme()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant='outline' size='icon' className='h-9' aria-label='Switch theme'>
+        <Button
+          variant='outline'
+          size='icon'
+          className='h-9'
+          aria-label='Switch theme'
+          {...props}
+        >
           <Sun size={18} className='inline-block dark:hidden' />
           <Moon size={18} className='hidden dark:inline-block' />
         </Button>
@@ -54,4 +60,4 @@ const ThemeMenu = () => {
   )
 }
 
-export default ThemeMenu
+export default ThemeMenuButton
