@@ -1,3 +1,10 @@
+'use client'
+
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { joinRoomSchema } from '@/lib/validations/joinRoom'
 import { Button } from '@/components/ui/Button'
 import {
   Dialog,
@@ -6,9 +13,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/Dialog'
+import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/Form'
 import { Input } from '@/components/ui/Input'
 
+type JoinRoomForm = z.infer<typeof joinRoomSchema>
+
 export default function JoinRoomButtoon() {
+  const form = useForm<JoinRoomForm>({
+    resolver: zodResolver(joinRoomSchema),
+    defaultValues: {
+      roomId: '',
+    },
+  })
+
+  function onSubmit(values: JoinRoomForm) {
+    console.log(values)
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -17,16 +38,32 @@ export default function JoinRoomButtoon() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='w-[90vw] max-w-[400px]'>
         <DialogHeader className='pb-2'>
           <DialogTitle>Join a room now!</DialogTitle>
         </DialogHeader>
 
-        <form className='flex flex-col space-y-4'>
-          <Input placeholder='Enter room ID' />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className='flex flex-col space-y-5'
+          >
+            <FormField
+              control={form.control}
+              name='roomId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder='Enter room ID' {...field} />
+                  </FormControl>
+                  <FormMessage className='text-xs' />
+                </FormItem>
+              )}
+            />
 
-          <Button>Join</Button>
-        </form>
+            <Button type='submit'>Join</Button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )
