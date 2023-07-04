@@ -8,7 +8,10 @@ import { Label } from '@/components/ui/Label'
 import { Button } from '@/components/ui/Button'
 
 export default function ColorPicker() {
-  const { strokeColor, setStrokeColor } = useCanvasStore()
+  const [strokeColor, setStrokeColor] = useCanvasStore(state => [
+    state.strokeColor,
+    state.setStrokeColor,
+  ])
 
   return (
     <div>

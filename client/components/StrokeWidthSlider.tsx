@@ -5,7 +5,10 @@ import { Slider } from '@/components/ui/Slider'
 import { Label } from '@/components/ui/Label'
 
 export default function StrokeWidthSlider() {
-  const { strokeWidth, setStrokeWidth } = useCanvasStore()
+  const [strokeWidth, setStrokeWidth] = useCanvasStore(state => [
+    state.strokeWidth,
+    state.setStrokeWidth,
+  ])
 
   return (
     <div>

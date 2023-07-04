@@ -12,7 +12,9 @@ export default function DrawingCanvas() {
 
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false)
 
-  const { strokeColor, strokeWidth, dashGap } = useCanvasStore()
+  const strokeColor = useCanvasStore(state => state.strokeColor)
+  const strokeWidth = useCanvasStore(state => state.strokeWidth)
+  const dashGap = useCanvasStore(state => state.dashGap)
 
   const draw = useCallback(
     ({ ctx, currentPoint, prevPoint }: DrawProps) => {

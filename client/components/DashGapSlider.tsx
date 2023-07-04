@@ -5,7 +5,7 @@ import { Slider } from '@/components/ui/Slider'
 import { Label } from '@/components/ui/Label'
 
 export default function DashGapSlider() {
-  const { dashGap, setDashGap } = useCanvasStore()
+  const [dashGap, setDashGap] = useCanvasStore(state => [state.dashGap, state.setDashGap])
 
   return (
     <div>
