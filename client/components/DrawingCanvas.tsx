@@ -1,13 +1,17 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 import { useCanvasStore } from '@/stores/canvasStore'
+import { useUserStore } from '@/stores/userStore'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function DrawingCanvas() {
+  const router = useRouter()
+
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [isCanvasLoaded, setIsCanvasLoaded] = useState(false)
@@ -15,6 +19,13 @@ export default function DrawingCanvas() {
   const strokeColor = useCanvasStore(state => state.strokeColor)
   const strokeWidth = useCanvasStore(state => state.strokeWidth)
   const dashGap = useCanvasStore(state => state.dashGap)
+  const user = useUserStore(state => state.user)
+
+  useEffect(() => {
+    if (!user) {
+      router.replace('/')
+    }
+  }, [user])
 
   const draw = useCallback(
     ({ ctx, currentPoint, prevPoint }: DrawProps) => {
