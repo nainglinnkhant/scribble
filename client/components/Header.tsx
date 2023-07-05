@@ -29,7 +29,7 @@ export default function Header() {
               </Button>
             </SheetTrigger>
 
-            <SheetContent className='w-72'>
+            <SheetContent className='w-[17rem]'>
               <RightPanel />
             </SheetContent>
           </Sheet>
