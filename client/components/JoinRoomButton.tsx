@@ -37,7 +37,7 @@ export default function JoinRoomButtoon() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant='outline' className='w-full'>
-          Join a room
+          Join a Room
         </Button>
       </DialogTrigger>
 

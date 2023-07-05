@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { nanoid } from 'nanoid'
 
+import { useUserStore } from '@/stores/userStore'
 import { createRoomSchema } from '@/lib/validations/createRoom'
 import { Button } from '@/components/ui/Button'
 import {
@@ -26,6 +28,7 @@ type CreatRoomForm = z.infer<typeof createRoomSchema>
 
 export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   const router = useRouter()
+  const setUser = useUserStore(state => state.setUser)
 
   const form = useForm<CreatRoomForm>({
     resolver: zodResolver(createRoomSchema),
@@ -34,8 +37,12 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
     },
   })
 
-  function onSubmit() {
+  function onSubmit({ username }: CreatRoomForm) {
     router.replace(`/${roomId}`)
+    setUser({
+      id: nanoid(),
+      name: username,
+    })
   }
 
   return (
@@ -65,7 +72,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
         </div>
 
         <Button type='submit' className='mt-2 w-full'>
-          Create a room
+          Create a Room
         </Button>
       </form>
     </Form>
