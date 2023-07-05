@@ -1,6 +1,6 @@
 'use client'
 
-import { ScrollArea } from './ui/ScrollArea'
+import { ScrollArea } from '@/components/ui/ScrollArea'
 
 const MEMBERS = ['shadcn', 'danabramov']
 

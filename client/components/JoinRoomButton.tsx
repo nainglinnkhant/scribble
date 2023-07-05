@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { nanoid } from 'nanoid'
 
+import { useUserStore } from '@/stores/userStore'
 import { joinRoomSchema } from '@/lib/validations/joinRoom'
 import { Button } from '@/components/ui/Button'
 import {
@@ -14,13 +16,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/Dialog'
-import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/Form'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/Form'
 import { Input } from '@/components/ui/Input'
 
 type JoinRoomForm = z.infer<typeof joinRoomSchema>
 
 export default function JoinRoomButtoon() {
   const router = useRouter()
+  const setUser = useUserStore(state => state.setUser)
 
   const form = useForm<JoinRoomForm>({
     resolver: zodResolver(joinRoomSchema),
@@ -29,8 +32,12 @@ export default function JoinRoomButtoon() {
     },
   })
 
-  function onSubmit({ roomId }: JoinRoomForm) {
+  function onSubmit({ roomId, username }: JoinRoomForm) {
     router.replace(`/${roomId}`)
+    setUser({
+      id: nanoid(),
+      name: username,
+    })
   }
 
   return (
@@ -47,24 +54,36 @@ export default function JoinRoomButtoon() {
         </DialogHeader>
 
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='flex flex-col space-y-5'
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-4'>
             <FormField
               control={form.control}
-              name='roomId'
+              name='username'
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder='Enter room ID' {...field} />
+                    <Input placeholder='Username' {...field} />
                   </FormControl>
                   <FormMessage className='text-xs' />
                 </FormItem>
               )}
             />
 
-            <Button type='submit'>Join</Button>
+            <FormField
+              control={form.control}
+              name='roomId'
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder='Room ID' {...field} />
+                  </FormControl>
+                  <FormMessage className='text-xs' />
+                </FormItem>
+              )}
+            />
+
+            <Button type='submit' className='mt-2'>
+              Join
+            </Button>
           </form>
         </Form>
       </DialogContent>
