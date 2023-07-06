@@ -15,6 +15,11 @@ const server = http.createServer(app)
 
 const io = new Server(server)
 
+function isRoomCreated(roomId: string) {
+  const rooms = [...io.sockets.adapter.rooms]
+  return rooms?.some(room => room[0] === roomId)
+}
+
 function joinRoom(socket: Socket, roomId: string, username: string) {
   socket.join(roomId)
   const user = {
@@ -30,7 +35,13 @@ io.on('connection', socket => {
   })
 
   socket.on('join-room', ({ roomId, username }: JoinRoomData) => {
-    joinRoom(socket, roomId, username)
+    if (isRoomCreated(roomId)) {
+      return joinRoom(socket, roomId, username)
+    }
+
+    socket.emit('room-not-found', {
+      message: "Oops! The Room ID you entered doesn't exist or hasn't been created yet.",
+    })
   })
 })
 

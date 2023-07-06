@@ -10,6 +10,7 @@ import type { RoomJoinedData } from '@/types'
 import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
 import { createRoomSchema } from '@/lib/validations/createRoom'
+import { useToast } from '@/components/ui/useToast'
 import { Button } from '@/components/ui/Button'
 import {
   Form,
@@ -30,6 +31,8 @@ type CreatRoomForm = z.infer<typeof createRoomSchema>
 
 export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   const router = useRouter()
+  const { toast } = useToast()
+
   const setUser = useUserStore(state => state.setUser)
 
   const form = useForm<CreatRoomForm>({
@@ -47,6 +50,13 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
     socket.on('room-joined', ({ user, roomId }: RoomJoinedData) => {
       setUser(user)
       router.replace(`/${roomId}`)
+    })
+
+    socket.on('room-not-found', ({ message }: { message: string }) => {
+      toast({
+        title: 'Failed to join room!',
+        description: message,
+      })
     })
   }, [])
 

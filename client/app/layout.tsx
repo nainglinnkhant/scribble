@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 
+import { Toaster } from '@/components/ui/Toaster'
 import { Providers } from './providers'
 import './globals.css'
 
@@ -17,6 +18,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en' suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
         <Providers>{children}</Providers>
+
+        <Toaster />
 
         <Analytics />
       </body>
