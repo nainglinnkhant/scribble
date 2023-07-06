@@ -1,12 +1,14 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { nanoid } from 'nanoid'
 
+import type { RoomJoinedData } from '@/types'
 import { useUserStore } from '@/stores/userStore'
+import { socket } from '@/lib/socket'
 import { createRoomSchema } from '@/lib/validations/createRoom'
 import { Button } from '@/components/ui/Button'
 import {
@@ -38,12 +40,15 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   })
 
   function onSubmit({ username }: CreatRoomForm) {
-    router.replace(`/${roomId}`)
-    setUser({
-      id: nanoid(),
-      name: username,
-    })
+    socket.emit('create-room', { roomId, username })
   }
+
+  useEffect(() => {
+    socket.on('room-joined', ({ user, roomId }: RoomJoinedData) => {
+      setUser(user)
+      router.replace(`/${roomId}`)
+    })
+  }, [])
 
   return (
     <Form {...form}>

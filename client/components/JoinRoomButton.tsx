@@ -1,12 +1,10 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { nanoid } from 'nanoid'
 
-import { useUserStore } from '@/stores/userStore'
+import { socket } from '@/lib/socket'
 import { joinRoomSchema } from '@/lib/validations/joinRoom'
 import { Button } from '@/components/ui/Button'
 import {
@@ -22,22 +20,16 @@ import { Input } from '@/components/ui/Input'
 type JoinRoomForm = z.infer<typeof joinRoomSchema>
 
 export default function JoinRoomButtoon() {
-  const router = useRouter()
-  const setUser = useUserStore(state => state.setUser)
-
   const form = useForm<JoinRoomForm>({
     resolver: zodResolver(joinRoomSchema),
     defaultValues: {
+      username: '',
       roomId: '',
     },
   })
 
   function onSubmit({ roomId, username }: JoinRoomForm) {
-    router.replace(`/${roomId}`)
-    setUser({
-      id: nanoid(),
-      name: username,
-    })
+    socket.emit('join-room', { roomId, username })
   }
 
   return (
