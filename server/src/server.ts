@@ -44,7 +44,7 @@ function joinRoom(socket: Socket, roomId: string, username: string) {
   const members = getRoomMembers(roomId)
 
   socket.emit('room-joined', { user, roomId, members })
-  socket.broadcast.emit('update-members', members)
+  socket.to(roomId).emit('update-members', members)
   socket.to(roomId).emit('send-notification', {
     title: 'New member arrived!',
     message: `${username} joined the party.`,
@@ -60,7 +60,7 @@ function leaveRoom(socket: Socket) {
   removeUser(socket.id)
   const members = getRoomMembers(roomId)
 
-  socket.broadcast.emit('update-members', members)
+  socket.to(roomId).emit('update-members', members)
   socket.to(roomId).emit('send-notification', {
     title: 'Member departure!',
     message: `${username} left the party.`,

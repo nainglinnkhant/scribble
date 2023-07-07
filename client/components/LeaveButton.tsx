@@ -1,13 +1,12 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 import { socket } from '@/lib/socket'
 import { Button } from '@/components/ui/Button'
 
 export default function LeaveButton() {
   const router = useRouter()
-  const params = useParams()
 
   return (
     <Button
