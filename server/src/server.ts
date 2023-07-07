@@ -67,6 +67,10 @@ io.on('connection', socket => {
       message: "Oops! The Room ID you entered doesn't exist or hasn't been created yet.",
     })
   })
+
+  socket.on('leave-room', (roomId: string) => {
+    socket.leave(roomId)
+  })
 })
 
 const PORT = process.env.PORT || 3001
