@@ -52,12 +52,16 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
       router.replace(`/${roomId}`)
     })
 
-    socket.on('room-not-found', ({ message }: { message: string }) => {
+    function handleErrorMessage({ message }: { message: string }) {
       toast({
         title: 'Failed to join room!',
         description: message,
       })
-    })
+    }
+
+    socket.on('room-not-found', handleErrorMessage)
+
+    socket.on('invalid-data', handleErrorMessage)
 
     return () => {
       socket.off('room-joined')

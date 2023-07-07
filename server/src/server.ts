@@ -1,7 +1,9 @@
 import { Server, type Socket } from 'socket.io'
 import { nanoid } from 'nanoid'
+import { z } from 'zod'
 
 import type { JoinRoomData } from './types'
+import { joinRoomSchema } from './lib/validations/joinRoom'
 
 const express = require('express')
 const http = require('http')
@@ -20,6 +22,18 @@ function isRoomCreated(roomId: string) {
   return rooms?.some(room => room[0] === roomId)
 }
 
+function validateJoinRoomData(socket: Socket, joinRoomData: JoinRoomData) {
+  try {
+    return joinRoomSchema.parse(joinRoomData)
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      socket.emit('invalid-data', {
+        message: 'The entities you provided are not correct and cannot be processed.',
+      })
+    }
+  }
+}
+
 function joinRoom(socket: Socket, roomId: string, username: string) {
   socket.join(roomId)
   const user = {
@@ -30,11 +44,21 @@ function joinRoom(socket: Socket, roomId: string, username: string) {
 }
 
 io.on('connection', socket => {
-  socket.on('create-room', ({ roomId, username }: JoinRoomData) => {
+  socket.on('create-room', (joinRoomData: JoinRoomData) => {
+    const validatedData = validateJoinRoomData(socket, joinRoomData)
+
+    if (!validatedData) return
+    const { roomId, username } = validatedData
+
     joinRoom(socket, roomId, username)
   })
 
-  socket.on('join-room', ({ roomId, username }: JoinRoomData) => {
+  socket.on('join-room', (joinRoomData: JoinRoomData) => {
+    const validatedData = validateJoinRoomData(socket, joinRoomData)
+
+    if (!validatedData) return
+    const { roomId, username } = validatedData
+
     if (isRoomCreated(roomId)) {
       return joinRoom(socket, roomId, username)
     }
