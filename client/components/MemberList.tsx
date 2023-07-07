@@ -2,11 +2,15 @@
 
 import { useEffect } from 'react'
 
+import type { Notification } from '@/types'
 import { useMembersStore } from '@/stores/membersStore'
 import { socket } from '@/lib/socket'
+import { useToast } from '@/components/ui/useToast'
 import { ScrollArea } from '@/components/ui/ScrollArea'
 
 export default function MemberList() {
+  const { toast } = useToast()
+
   const [members, setMembers] = useMembersStore(state => [
     state.members,
     state.setMembers,
@@ -17,8 +21,16 @@ export default function MemberList() {
       setMembers(members)
     })
 
+    socket.on('send-notification', ({ title, message }: Notification) => {
+      toast({
+        title,
+        description: message,
+      })
+    })
+
     return () => {
       socket.off('update-members')
+      socket.off('send-notification')
     }
   }, [])
 

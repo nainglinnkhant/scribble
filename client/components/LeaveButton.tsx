@@ -14,7 +14,7 @@ export default function LeaveButton() {
       variant='destructive'
       className='absolute bottom-0 w-full'
       onClick={() => {
-        socket.emit('leave-room', params.roomId)
+        socket.emit('leave-room')
         router.replace('/')
       }}
     >

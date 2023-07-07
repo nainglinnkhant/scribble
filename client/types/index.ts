@@ -5,3 +5,8 @@ export interface RoomJoinedData {
   roomId: string
   members: User[]
 }
+
+export interface Notification {
+  title: string
+  message: string
+}
