@@ -1,9 +1,9 @@
 import { Server, type Socket } from 'socket.io'
-import { nanoid } from 'nanoid'
 import { z } from 'zod'
 
 import type { JoinRoomData } from './types'
 import { joinRoomSchema } from './lib/validations/joinRoom'
+import { addUser, getRoomMembers, removeUser } from './data/users'
 
 const express = require('express')
 const http = require('http')
@@ -37,10 +37,12 @@ function validateJoinRoomData(socket: Socket, joinRoomData: JoinRoomData) {
 function joinRoom(socket: Socket, roomId: string, username: string) {
   socket.join(roomId)
   const user = {
-    id: nanoid(),
+    id: socket.id,
     username,
   }
-  socket.emit('room-joined', { user, roomId })
+  addUser({ ...user, roomId })
+  const members = getRoomMembers(roomId)
+  socket.emit('room-joined', { user, roomId, members })
 }
 
 io.on('connection', socket => {
@@ -70,6 +72,7 @@ io.on('connection', socket => {
 
   socket.on('leave-room', (roomId: string) => {
     socket.leave(roomId)
+    removeUser(socket.id)
   })
 })
 

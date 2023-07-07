@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import type { RoomJoinedData } from '@/types'
 import { useUserStore } from '@/stores/userStore'
+import { useMembersStore } from '@/stores/membersStore'
 import { socket } from '@/lib/socket'
 import { createRoomSchema } from '@/lib/validations/createRoom'
 import { useToast } from '@/components/ui/useToast'
@@ -34,6 +35,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   const { toast } = useToast()
 
   const setUser = useUserStore(state => state.setUser)
+  const setMembers = useMembersStore(state => state.setMembers)
 
   const form = useForm<CreatRoomForm>({
     resolver: zodResolver(createRoomSchema),
@@ -47,8 +49,9 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   }
 
   useEffect(() => {
-    socket.on('room-joined', ({ user, roomId }: RoomJoinedData) => {
+    socket.on('room-joined', ({ user, roomId, members }: RoomJoinedData) => {
       setUser(user)
+      setMembers(members)
       router.replace(`/${roomId}`)
     })
 
