@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 import type { JoinRoomData } from './types'
 import { joinRoomSchema } from './lib/validations/joinRoom'
-import { addUser, getRoomMembers, removeUser } from './data/users'
+import { addUser, getRoomMembers, getUser, removeUser } from './data/users'
 
 const express = require('express')
 const http = require('http')
@@ -43,6 +43,14 @@ function joinRoom(socket: Socket, roomId: string, username: string) {
   addUser({ ...user, roomId })
   const members = getRoomMembers(roomId)
   socket.emit('room-joined', { user, roomId, members })
+  socket.broadcast.emit('update-members', members)
+}
+
+function leaveRoom(socket: Socket, roomId: string) {
+  removeUser(socket.id)
+  const members = getRoomMembers(roomId)
+  socket.broadcast.emit('update-members', members)
+  socket.leave(roomId)
 }
 
 io.on('connection', socket => {
@@ -71,8 +79,14 @@ io.on('connection', socket => {
   })
 
   socket.on('leave-room', (roomId: string) => {
-    socket.leave(roomId)
-    removeUser(socket.id)
+    leaveRoom(socket, roomId)
+  })
+
+  socket.on('disconnect', () => {
+    const user = getUser(socket.id)
+    if (!user) return
+
+    leaveRoom(socket, user.roomId)
   })
 })
 

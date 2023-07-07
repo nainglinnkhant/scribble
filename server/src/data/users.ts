@@ -1,6 +1,6 @@
 import type { User } from '../types'
 
-const users: User[] = []
+let users: User[] = []
 
 const getUser = (userId: string) => users.find(user => user.id === userId)
 
@@ -11,6 +11,8 @@ const getRoomMembers = (roomId: string) =>
 
 const addUser = (user: User) => users.push(user)
 
-const removeUser = (userId: string) => users.filter(user => user.id !== userId)
+const removeUser = (userId: string) => {
+  users = users.filter(user => user.id !== userId)
+}
 
 export { getUser, getRoomMembers, addUser, removeUser }

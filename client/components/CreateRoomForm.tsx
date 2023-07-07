@@ -69,6 +69,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
     return () => {
       socket.off('room-joined')
       socket.off('room-not-found')
+      socket.off('invalid-data', handleErrorMessage)
     }
   }, [])
 

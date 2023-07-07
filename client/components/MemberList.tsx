@@ -1,10 +1,26 @@
 'use client'
 
+import { useEffect } from 'react'
+
 import { useMembersStore } from '@/stores/membersStore'
+import { socket } from '@/lib/socket'
 import { ScrollArea } from '@/components/ui/ScrollArea'
 
 export default function MemberList() {
-  const members = useMembersStore(state => state.members)
+  const [members, setMembers] = useMembersStore(state => [
+    state.members,
+    state.setMembers,
+  ])
+
+  useEffect(() => {
+    socket.on('update-members', members => {
+      setMembers(members)
+    })
+
+    return () => {
+      socket.off('update-members')
+    }
+  }, [])
 
   return (
     <div className='my-6'>
