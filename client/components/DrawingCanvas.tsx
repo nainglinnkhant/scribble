@@ -55,6 +55,12 @@ export default function DrawingCanvas() {
       if (!ctx) return
       draw({ ...drawOptions, ctx })
     })
+
+    return () => {
+      socket.off('get-canvas-state')
+      socket.off('send-canvas-state')
+      socket.off('update-canvas-state')
+    }
   }, [params.roomId])
 
   const onDraw = useCallback(
