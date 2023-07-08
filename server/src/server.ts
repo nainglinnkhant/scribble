@@ -1,7 +1,7 @@
 import { Server, type Socket } from 'socket.io'
 import { z } from 'zod'
 
-import type { JoinRoomData } from './types'
+import type { DrawOptions, JoinRoomData } from './types'
 import { joinRoomSchema } from './lib/validations/joinRoom'
 import { addUser, getRoomMembers, getUser, removeUser } from './data/users'
 
@@ -111,6 +111,13 @@ io.on('connection', socket => {
       if (!lastMember) return
 
       socket.to(lastMember.id).emit('send-canvas-state', canvasState)
+    }
+  )
+
+  socket.on(
+    'draw',
+    ({ drawOptions, roomId }: { drawOptions: DrawOptions; roomId: string }) => {
+      socket.to(roomId).emit('update-canvas-state', drawOptions)
     }
   )
 

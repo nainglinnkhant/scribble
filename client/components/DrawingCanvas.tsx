@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
+import type { DrawOptions } from '@/types'
 import { useCanvasStore } from '@/stores/canvasStore'
 import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
@@ -48,31 +49,56 @@ export default function DrawingCanvas() {
         ctx?.drawImage(img, 0, 0)
       }
     })
+
+    socket.on('update-canvas-state', (drawOptions: DrawOptions) => {
+      if (!ctx) return
+      draw({ ...drawOptions, ctx })
+    })
   }, [params.roomId])
 
-  const draw = useCallback(
+  function draw({
+    ctx,
+    currentPoint,
+    prevPoint,
+    strokeColor,
+    strokeWidth,
+    dashGap,
+  }: DrawOptions) {
+    const startPoint = prevPoint ?? currentPoint
+
+    ctx.strokeStyle = strokeColor
+    ctx.lineWidth = strokeWidth[0]
+    ctx.setLineDash(dashGap)
+    ctx.lineJoin = 'round'
+    ctx.lineCap = 'round'
+
+    // Start a new path
+    ctx.beginPath()
+    // Place the cursor from the point the line should be started
+    ctx.moveTo(startPoint.x, startPoint.y)
+    // Draw a line from current cursor position to the provided x,y coordinate
+    ctx.lineTo(currentPoint.x, currentPoint.y)
+    // Add stroke to the given path (render the line)
+    ctx.stroke()
+  }
+
+  const onDraw = useCallback(
     ({ ctx, currentPoint, prevPoint }: DrawProps) => {
-      const startPoint = prevPoint ?? currentPoint
-
-      ctx.strokeStyle = strokeColor
-      ctx.lineWidth = strokeWidth[0]
-      ctx.setLineDash(dashGap)
-      ctx.lineJoin = 'round'
-      ctx.lineCap = 'round'
-
-      // Start a new path
-      ctx.beginPath()
-      // Place the cursor from the point the line should be started
-      ctx.moveTo(startPoint.x, startPoint.y)
-      // Draw a line from current cursor position to the provided x,y coordinate
-      ctx.lineTo(currentPoint.x, currentPoint.y)
-      // Add stroke to the given path (render the line)
-      ctx.stroke()
+      const drawOptions = {
+        ctx,
+        currentPoint,
+        prevPoint,
+        strokeColor,
+        strokeWidth,
+        dashGap,
+      }
+      draw(drawOptions)
+      socket.emit('draw', { drawOptions, roomId: params.roomId })
     },
     [strokeColor, strokeWidth, dashGap]
   )
 
-  const { canvasRef, onInteractStart, clear } = useDraw(draw)
+  const { canvasRef, onInteractStart, clear } = useDraw(onDraw)
 
   useEffect(() => {
     const setCanvasDimensions = () => {
