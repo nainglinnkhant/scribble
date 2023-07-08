@@ -31,7 +31,6 @@ export default function DrawingCanvas() {
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d')
-    console.log('ran')
 
     socket.emit('client-ready', params.roomId)
 
