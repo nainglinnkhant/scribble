@@ -93,6 +93,27 @@ io.on('connection', socket => {
     })
   })
 
+  socket.on('client-ready', (roomId: string) => {
+    const members = getRoomMembers(roomId)
+    const adminMember = members[0]
+
+    if (!adminMember) return
+
+    socket.to(adminMember.id).emit('get-canvas-state')
+  })
+
+  socket.on(
+    'receive-canvas-state',
+    ({ canvasState, roomId }: { canvasState: string; roomId: string }) => {
+      const members = getRoomMembers(roomId)
+      const lastMember = members[members.length - 1]
+
+      if (!lastMember) return
+
+      socket.to(lastMember.id).emit('send-canvas-state', canvasState)
+    }
+  )
+
   socket.on('leave-room', () => {
     leaveRoom(socket)
   })

@@ -1,16 +1,18 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
 import { useCanvasStore } from '@/stores/canvasStore'
 import { useUserStore } from '@/stores/userStore'
+import { socket } from '@/lib/socket'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 
 export default function DrawingCanvas() {
   const router = useRouter()
+  const params = useParams()
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -26,6 +28,28 @@ export default function DrawingCanvas() {
       router.replace('/')
     }
   }, [user])
+
+  useEffect(() => {
+    const ctx = canvasRef.current?.getContext('2d')
+    console.log('ran')
+
+    socket.emit('client-ready', params.roomId)
+
+    socket.on('get-canvas-state', () => {
+      const canvasState = canvasRef.current?.toDataURL()
+      if (!canvasState) return
+
+      socket.emit('receive-canvas-state', { canvasState, roomId: params.roomId })
+    })
+
+    socket.on('send-canvas-state', (canvasState: string) => {
+      const img = new Image()
+      img.src = canvasState
+      img.onload = () => {
+        ctx?.drawImage(img, 0, 0)
+      }
+    })
+  }, [params.roomId])
 
   const draw = useCallback(
     ({ ctx, currentPoint, prevPoint }: DrawProps) => {
