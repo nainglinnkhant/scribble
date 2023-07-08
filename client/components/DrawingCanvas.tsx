@@ -7,6 +7,7 @@ import type { DrawOptions } from '@/types'
 import { useCanvasStore } from '@/stores/canvasStore'
 import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
+import { draw } from '@/lib/utils'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -55,32 +56,6 @@ export default function DrawingCanvas() {
       draw({ ...drawOptions, ctx })
     })
   }, [params.roomId])
-
-  function draw({
-    ctx,
-    currentPoint,
-    prevPoint,
-    strokeColor,
-    strokeWidth,
-    dashGap,
-  }: DrawOptions) {
-    const startPoint = prevPoint ?? currentPoint
-
-    ctx.strokeStyle = strokeColor
-    ctx.lineWidth = strokeWidth[0]
-    ctx.setLineDash(dashGap)
-    ctx.lineJoin = 'round'
-    ctx.lineCap = 'round'
-
-    // Start a new path
-    ctx.beginPath()
-    // Place the cursor from the point the line should be started
-    ctx.moveTo(startPoint.x, startPoint.y)
-    // Draw a line from current cursor position to the provided x,y coordinate
-    ctx.lineTo(currentPoint.x, currentPoint.y)
-    // Add stroke to the given path (render the line)
-    ctx.stroke()
-  }
 
   const onDraw = useCallback(
     ({ ctx, currentPoint, prevPoint }: DrawProps) => {
