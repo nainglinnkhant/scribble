@@ -121,6 +121,10 @@ io.on('connection', socket => {
     }
   )
 
+  socket.on('clear-canvas', (roomId: string) => {
+    socket.to(roomId).emit('clear-room-canvas')
+  })
+
   socket.on('leave-room', () => {
     leaveRoom(socket)
   })

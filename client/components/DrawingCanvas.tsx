@@ -95,6 +95,14 @@ export default function DrawingCanvas() {
     setIsCanvasLoaded(true)
   }, [])
 
+  useEffect(() => {
+    socket.on('clear-room-canvas', clear)
+
+    return () => {
+      socket.off('clear-room-canvas')
+    }
+  }, [])
+
   return (
     <div
       ref={containerRef}
@@ -102,7 +110,10 @@ export default function DrawingCanvas() {
     >
       <Button
         variant='outline'
-        onClick={clear}
+        onClick={() => {
+          clear()
+          socket.emit('clear-canvas', params.roomId)
+        }}
         className='absolute right-[25px] top-[25px] select-none rounded-none rounded-bl rounded-tr-[2.5px] border-0 border-b border-l'
       >
         Clear
