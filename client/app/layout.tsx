@@ -29,6 +29,12 @@ export const metadata = {
     siteName: TITLE,
     url: 'https://scribble-delta.vercel.app',
   },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
+  },
+  manifest: '/site.webmanifest',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
