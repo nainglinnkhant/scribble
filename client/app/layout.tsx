@@ -18,11 +18,16 @@ export const metadata = {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
+    images: ['/og'],
+    creator: '@nainglk',
   },
   openGraph: {
     type: 'website',
     title: TITLE,
     description: DESCRIPTION,
+    images: ['/og'],
+    siteName: TITLE,
+    url: 'https://scribble-delta.vercel.app',
   },
 }
 
