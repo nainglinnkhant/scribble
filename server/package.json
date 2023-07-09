@@ -13,7 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.3.3",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
