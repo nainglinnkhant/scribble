@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader2 } from 'lucide-react'
 
 import type { RoomJoinedData } from '@/types'
 import { useUserStore } from '@/stores/userStore'
@@ -37,6 +38,8 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   const setUser = useUserStore(state => state.setUser)
   const setMembers = useMembersStore(state => state.setMembers)
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm<CreatRoomForm>({
     resolver: zodResolver(createRoomSchema),
     defaultValues: {
@@ -45,6 +48,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   })
 
   function onSubmit({ username }: CreatRoomForm) {
+    setIsLoading(true)
     socket.emit('create-room', { roomId, username })
   }
 
@@ -100,7 +104,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
         </div>
 
         <Button type='submit' className='mt-2 w-full'>
-          Create a Room
+          {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Create a Room'}
         </Button>
       </form>
     </Form>
