@@ -14,6 +14,7 @@ const DESCRIPTION =
 export const metadata = {
   title: TITLE,
   description: DESCRIPTION,
+  metadataBase: 'https://scribble-delta.vercel.app',
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
