@@ -75,7 +75,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
       socket.off('room-not-found')
       socket.off('invalid-data', handleErrorMessage)
     }
-  }, [])
+  }, [router, toast, setUser, setMembers])
 
   return (
     <Form {...form}>

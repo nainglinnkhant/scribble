@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type AppTouchEvent = TouchEvent
 
@@ -23,7 +23,7 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
     setMouseDown(true)
   }
 
-  const clear = () => {
+  const clear = useCallback(() => {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
 
@@ -31,7 +31,7 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
     if (!ctx) return
 
     ctx.clearRect(0, 0, canvasElement.width, canvasElement.height)
-  }
+  }, [])
 
   useEffect(() => {
     const computePointInCanvas = (clientX: number, clientY: number) => {

@@ -32,7 +32,7 @@ export default function MemberList() {
       socket.off('update-members')
       socket.off('send-notification')
     }
-  }, [])
+  }, [toast, setMembers])
 
   return (
     <div className='my-6'>

@@ -29,7 +29,25 @@ export default function DrawingCanvas() {
     if (!user) {
       router.replace('/')
     }
-  }, [user])
+  }, [router, user])
+
+  const onDraw = useCallback(
+    ({ ctx, currentPoint, prevPoint }: DrawProps) => {
+      const drawOptions = {
+        ctx,
+        currentPoint,
+        prevPoint,
+        strokeColor,
+        strokeWidth,
+        dashGap,
+      }
+      draw(drawOptions)
+      socket.emit('draw', { drawOptions, roomId: params.roomId })
+    },
+    [strokeColor, strokeWidth, dashGap, params.roomId]
+  )
+
+  const { canvasRef, onInteractStart, clear } = useDraw(onDraw)
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d')
@@ -61,25 +79,7 @@ export default function DrawingCanvas() {
       socket.off('send-canvas-state')
       socket.off('update-canvas-state')
     }
-  }, [params.roomId])
-
-  const onDraw = useCallback(
-    ({ ctx, currentPoint, prevPoint }: DrawProps) => {
-      const drawOptions = {
-        ctx,
-        currentPoint,
-        prevPoint,
-        strokeColor,
-        strokeWidth,
-        dashGap,
-      }
-      draw(drawOptions)
-      socket.emit('draw', { drawOptions, roomId: params.roomId })
-    },
-    [strokeColor, strokeWidth, dashGap]
-  )
-
-  const { canvasRef, onInteractStart, clear } = useDraw(onDraw)
+  }, [canvasRef, params.roomId])
 
   useEffect(() => {
     const setCanvasDimensions = () => {
@@ -93,7 +93,7 @@ export default function DrawingCanvas() {
 
     setCanvasDimensions()
     setIsCanvasLoaded(true)
-  }, [])
+  }, [canvasRef])
 
   useEffect(() => {
     socket.on('clear-room-canvas', clear)
@@ -101,7 +101,7 @@ export default function DrawingCanvas() {
     return () => {
       socket.off('clear-room-canvas')
     }
-  }, [])
+  }, [clear])
 
   return (
     <div
