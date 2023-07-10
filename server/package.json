@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "rimraf build && tsc",
-    "start": "npm run build && node build/server.js"
+    "start": "pnpm run build && node build/server.js"
   },
   "keywords": [],
   "author": "Naing Linn Khant",
