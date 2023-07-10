@@ -19,7 +19,9 @@ export default function LeaveButton() {
       onClick={() => {
         setIsLoading(true)
         socket.emit('leave-room')
-        router.replace('/')
+        setTimeout(() => {
+          router.replace('/')
+        }, 600)
       }}
     >
       {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Leave Room'}
