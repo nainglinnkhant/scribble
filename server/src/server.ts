@@ -130,6 +130,7 @@ io.on('connection', socket => {
   })
 
   socket.on('disconnect', () => {
+    socket.emit('disconnected')
     leaveRoom(socket)
   })
 })
