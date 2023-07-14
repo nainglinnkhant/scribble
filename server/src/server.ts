@@ -69,12 +69,6 @@ function leaveRoom(socket: Socket) {
 }
 
 io.on('connection', socket => {
-  socket.on('connect', () => {
-    const user = getUser(socket.id)
-    if (!user) return
-    joinRoom(socket, user.roomId, user.username)
-  })
-
   socket.on('create-room', (joinRoomData: JoinRoomData) => {
     const validatedData = validateJoinRoomData(socket, joinRoomData)
 
