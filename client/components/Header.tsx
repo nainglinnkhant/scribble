@@ -22,7 +22,7 @@ export default function Header() {
               <Button
                 variant='outline'
                 size='icon'
-                className='flex h-9 md:hidden'
+                className='flex h-9 lg:hidden'
                 aria-label='Open right panel'
               >
                 <PanelRightOpen size={20} />
