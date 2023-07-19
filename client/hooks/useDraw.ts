@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { drawWithDataURL } from '@/lib/utils'
+
 type AppTouchEvent = TouchEvent
 
 interface Point {
@@ -39,18 +41,15 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
 
     const lastUndoPoint = undoPoints[undoPoints.length - 1]
 
-    const img = new Image()
-    img.src = lastUndoPoint
-    img.onload = () => {
-      ctx.clearRect(0, 0, canvasElement.width, canvasElement.height)
-      ctx.drawImage(img, 0, 0)
-    }
+    drawWithDataURL(lastUndoPoint, ctx, canvasElement)
 
     setUndoPoints(prevState => {
       const newState = [...prevState]
       newState.pop()
       return newState
     })
+
+    return lastUndoPoint
   }
 
   const clear = useCallback(() => {

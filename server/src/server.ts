@@ -125,6 +125,13 @@ io.on('connection', socket => {
     socket.to(roomId).emit('clear-room-canvas')
   })
 
+  socket.on(
+    'undo',
+    ({ canvasState, roomId }: { canvasState: string; roomId: string }) => {
+      socket.to(roomId).emit('undo-room-canvas', canvasState)
+    }
+  )
+
   socket.on('leave-room', () => {
     leaveRoom(socket)
   })

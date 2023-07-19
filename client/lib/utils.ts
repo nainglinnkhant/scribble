@@ -32,3 +32,16 @@ export function draw({
   // Add stroke to the given path (render the line)
   ctx.stroke()
 }
+
+export function drawWithDataURL(
+  dataURL: string,
+  ctx: CanvasRenderingContext2D,
+  canvasElement: HTMLCanvasElement
+) {
+  const img = new Image()
+  img.src = dataURL
+  img.onload = () => {
+    ctx.clearRect(0, 0, canvasElement.width, canvasElement.height)
+    ctx.drawImage(img, 0, 0)
+  }
+}

@@ -7,7 +7,7 @@ import type { DrawOptions } from '@/types'
 import { useCanvasStore } from '@/stores/canvasStore'
 import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
-import { draw } from '@/lib/utils'
+import { draw, drawWithDataURL } from '@/lib/utils'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -50,7 +50,8 @@ export default function DrawingCanvas() {
   const { canvasRef, onInteractStart, clear, undo } = useDraw(onDraw)
 
   useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d')
+    const canvasElement = canvasRef.current
+    const ctx = canvasElement?.getContext('2d')
 
     socket.emit('client-ready', params.roomId)
 
@@ -62,11 +63,9 @@ export default function DrawingCanvas() {
     })
 
     socket.on('send-canvas-state', (canvasState: string) => {
-      const img = new Image()
-      img.src = canvasState
-      img.onload = () => {
-        ctx?.drawImage(img, 0, 0)
-      }
+      if (!ctx || !canvasElement) return
+
+      drawWithDataURL(canvasState, ctx, canvasElement)
     })
 
     socket.on('update-canvas-state', (drawOptions: DrawOptions) => {
@@ -74,10 +73,17 @@ export default function DrawingCanvas() {
       draw({ ...drawOptions, ctx })
     })
 
+    socket.on('undo-room-canvas', canvasState => {
+      if (!ctx || !canvasElement) return
+
+      drawWithDataURL(canvasState, ctx, canvasElement)
+    })
+
     return () => {
       socket.off('get-canvas-state')
       socket.off('send-canvas-state')
       socket.off('update-canvas-state')
+      socket.off('undo-room-canvas')
     }
   }, [canvasRef, params.roomId])
 
@@ -113,21 +119,24 @@ export default function DrawingCanvas() {
           variant='outline'
           className='rounded-none rounded-bl-md border-0 border-b border-l'
           onClick={() => {
+            const canvasState = undo()
+            if (!canvasState) return
+
+            socket.emit('undo', { canvasState, roomId: params.roomId })
+          }}
+        >
+          Undo
+        </Button>
+
+        <Button
+          variant='outline'
+          className='rounded-none  border-0 border-b border-l'
+          onClick={() => {
             clear()
             socket.emit('clear-canvas', params.roomId)
           }}
         >
           Clear
-        </Button>
-
-        <Button
-          variant='outline'
-          className='rounded-none border-0 border-b border-l'
-          onClick={() => {
-            undo()
-          }}
-        >
-          Undo
         </Button>
       </div>
 
