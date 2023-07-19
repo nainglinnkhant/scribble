@@ -47,7 +47,7 @@ export default function DrawingCanvas() {
     [strokeColor, strokeWidth, dashGap, params.roomId]
   )
 
-  const { canvasRef, onInteractStart, clear } = useDraw(onDraw)
+  const { canvasRef, onInteractStart, clear, undo } = useDraw(onDraw)
 
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d')
@@ -108,16 +108,28 @@ export default function DrawingCanvas() {
       ref={containerRef}
       className='relative flex h-full w-full items-center justify-center'
     >
-      <Button
-        variant='outline'
-        onClick={() => {
-          clear()
-          socket.emit('clear-canvas', params.roomId)
-        }}
-        className='absolute right-[25px] top-[25px] select-none rounded-none rounded-bl rounded-tr-[2.5px] border-0 border-b border-l'
-      >
-        Clear
-      </Button>
+      <div className='absolute right-[25px] top-[25px] select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
+        <Button
+          variant='outline'
+          className='rounded-none rounded-bl-md border-0 border-b border-l'
+          onClick={() => {
+            clear()
+            socket.emit('clear-canvas', params.roomId)
+          }}
+        >
+          Clear
+        </Button>
+
+        <Button
+          variant='outline'
+          className='rounded-none border-0 border-b border-l'
+          onClick={() => {
+            undo()
+          }}
+        >
+          Undo
+        </Button>
+      </div>
 
       {!isCanvasLoaded && (
         <Skeleton className='absolute h-[calc(100%-50px)] w-[calc(100%-50px)]' />
