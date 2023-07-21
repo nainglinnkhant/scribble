@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
 import type { DrawOptions } from '@/types'
+import { addUndoPoint, deleteLastUndoPoint, getLastUndoPoint } from '@/api'
 import { useCanvasStore } from '@/stores/canvasStore'
 import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
@@ -109,6 +110,14 @@ export default function DrawingCanvas() {
     }
   }, [clear])
 
+  const handleInteractStart = async () => {
+    const canvasElement = canvasRef.current
+    if (!canvasElement) return
+
+    await addUndoPoint(params.roomId as string, canvasElement.toDataURL())
+    onInteractStart()
+  }
+
   return (
     <div
       ref={containerRef}
@@ -118,11 +127,15 @@ export default function DrawingCanvas() {
         <Button
           variant='outline'
           className='rounded-none rounded-bl-md border-0 border-b border-l'
-          onClick={() => {
-            const canvasState = undo()
-            if (!canvasState) return
+          onClick={async () => {
+            const res = await getLastUndoPoint(params.roomId as string)
+            undo(res.lastUndoPoint)
+            socket.emit('undo', {
+              canvasState: res.lastUndoPoint,
+              roomId: params.roomId,
+            })
 
-            socket.emit('undo', { canvasState, roomId: params.roomId })
+            deleteLastUndoPoint(params.roomId as string)
           }}
         >
           Undo
@@ -130,8 +143,12 @@ export default function DrawingCanvas() {
 
         <Button
           variant='outline'
-          className='rounded-none  border-0 border-b border-l'
-          onClick={() => {
+          className='rounded-none rounded-tr-md border-0 border-b border-l'
+          onClick={async () => {
+            const canvasElement = canvasRef.current
+            if (!canvasElement) return
+
+            await addUndoPoint(params.roomId as string, canvasElement.toDataURL())
             clear()
             socket.emit('clear-canvas', params.roomId)
           }}
@@ -147,8 +164,8 @@ export default function DrawingCanvas() {
       <canvas
         id='canvas'
         ref={canvasRef}
-        onMouseDown={onInteractStart}
-        onTouchStart={onInteractStart}
+        onMouseDown={handleInteractStart}
+        onTouchStart={handleInteractStart}
         width={0}
         height={0}
         className='touch-none rounded border bg-white'

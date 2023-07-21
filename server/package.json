@@ -12,6 +12,8 @@
   "author": "Naing Linn Khant",
   "license": "ISC",
   "devDependencies": {
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
     "@types/node": "^20.3.3",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.0",
