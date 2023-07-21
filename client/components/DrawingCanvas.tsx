@@ -4,10 +4,11 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
 import type { DrawOptions } from '@/types'
+import { addUndoPoint, deleteLastUndoPoint, getLastUndoPoint } from '@/api'
 import { useCanvasStore } from '@/stores/canvasStore'
 import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
-import { draw } from '@/lib/utils'
+import { draw, drawWithDataURL } from '@/lib/utils'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
@@ -24,6 +25,8 @@ export default function DrawingCanvas() {
   const strokeWidth = useCanvasStore(state => state.strokeWidth)
   const dashGap = useCanvasStore(state => state.dashGap)
   const user = useUserStore(state => state.user)
+
+  const roomId = params.roomId as string
 
   useEffect(() => {
     if (!user) {
@@ -42,31 +45,30 @@ export default function DrawingCanvas() {
         dashGap,
       }
       draw(drawOptions)
-      socket.emit('draw', { drawOptions, roomId: params.roomId })
+      socket.emit('draw', { drawOptions, roomId })
     },
-    [strokeColor, strokeWidth, dashGap, params.roomId]
+    [strokeColor, strokeWidth, dashGap, roomId]
   )
 
   const { canvasRef, onInteractStart, clear, undo } = useDraw(onDraw)
 
   useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d')
+    const canvasElement = canvasRef.current
+    const ctx = canvasElement?.getContext('2d')
 
-    socket.emit('client-ready', params.roomId)
+    socket.emit('client-ready', roomId)
 
     socket.on('get-canvas-state', () => {
       const canvasState = canvasRef.current?.toDataURL()
       if (!canvasState) return
 
-      socket.emit('receive-canvas-state', { canvasState, roomId: params.roomId })
+      socket.emit('receive-canvas-state', { canvasState, roomId })
     })
 
     socket.on('send-canvas-state', (canvasState: string) => {
-      const img = new Image()
-      img.src = canvasState
-      img.onload = () => {
-        ctx?.drawImage(img, 0, 0)
-      }
+      if (!ctx || !canvasElement) return
+
+      drawWithDataURL(canvasState, ctx, canvasElement)
     })
 
     socket.on('update-canvas-state', (drawOptions: DrawOptions) => {
@@ -74,12 +76,19 @@ export default function DrawingCanvas() {
       draw({ ...drawOptions, ctx })
     })
 
+    socket.on('undo-room-canvas', canvasState => {
+      if (!ctx || !canvasElement) return
+
+      drawWithDataURL(canvasState, ctx, canvasElement)
+    })
+
     return () => {
       socket.off('get-canvas-state')
       socket.off('send-canvas-state')
       socket.off('update-canvas-state')
+      socket.off('undo-room-canvas')
     }
-  }, [canvasRef, params.roomId])
+  }, [canvasRef, roomId])
 
   useEffect(() => {
     const setCanvasDimensions = () => {
@@ -103,6 +112,14 @@ export default function DrawingCanvas() {
     }
   }, [clear])
 
+  const handleInteractStart = async () => {
+    const canvasElement = canvasRef.current
+    if (!canvasElement) return
+
+    await addUndoPoint(roomId, canvasElement.toDataURL())
+    onInteractStart()
+  }
+
   return (
     <div
       ref={containerRef}
@@ -112,22 +129,33 @@ export default function DrawingCanvas() {
         <Button
           variant='outline'
           className='rounded-none rounded-bl-md border-0 border-b border-l'
-          onClick={() => {
-            clear()
-            socket.emit('clear-canvas', params.roomId)
+          onClick={async () => {
+            const res = await getLastUndoPoint(roomId)
+            undo(res.lastUndoPoint)
+            socket.emit('undo', {
+              canvasState: res.lastUndoPoint,
+              roomId,
+            })
+
+            deleteLastUndoPoint(roomId)
           }}
         >
-          Clear
+          Undo
         </Button>
 
         <Button
           variant='outline'
-          className='rounded-none border-0 border-b border-l'
-          onClick={() => {
-            undo()
+          className='rounded-none rounded-tr-md border-0 border-b border-l'
+          onClick={async () => {
+            const canvasElement = canvasRef.current
+            if (!canvasElement) return
+
+            await addUndoPoint(roomId, canvasElement.toDataURL())
+            clear()
+            socket.emit('clear-canvas', roomId)
           }}
         >
-          Undo
+          Clear
         </Button>
       </div>
 
@@ -138,8 +166,8 @@ export default function DrawingCanvas() {
       <canvas
         id='canvas'
         ref={canvasRef}
-        onMouseDown={onInteractStart}
-        onTouchStart={onInteractStart}
+        onMouseDown={handleInteractStart}
+        onTouchStart={handleInteractStart}
         width={0}
         height={0}
         className='touch-none rounded border bg-white'

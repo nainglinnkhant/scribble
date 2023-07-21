@@ -1,17 +1,50 @@
+import express, { Request, Response } from 'express'
 import { Server, type Socket } from 'socket.io'
+import http from 'http'
+import cors from 'cors'
 import { z } from 'zod'
 
 import type { DrawOptions, JoinRoomData } from './types'
 import { joinRoomSchema } from './lib/validations/joinRoom'
 import { addUser, getRoomMembers, getUser, removeUser } from './data/users'
-
-const express = require('express')
-const http = require('http')
-const cors = require('cors')
+import { addUndoPoint, getLastUndoPoint, removeLastUndoPoint } from './data/undoPoints'
 
 const app = express()
 
 app.use(cors())
+app.use(express.json())
+
+app.post('/undo-points', (req: Request, res: Response) => {
+  const { roomId, undoPoint } = req.body
+  addUndoPoint(roomId, undoPoint)
+
+  res.status(201).json({
+    data: {
+      roomId,
+      undoPoint,
+    },
+  })
+})
+
+app.get('/last-undo-point/:roomId', (req: Request, res: Response) => {
+  const { roomId } = req.params
+  const lastUndoPoint = getLastUndoPoint(roomId)
+
+  res.status(200).json({
+    data: {
+      lastUndoPoint,
+    },
+  })
+})
+
+app.delete('/last-undo-point/:roomId', (req: Request, res: Response) => {
+  const { roomId } = req.params
+  removeLastUndoPoint(roomId)
+
+  res.status(204).json({
+    data: null,
+  })
+})
 
 const server = http.createServer(app)
 
@@ -124,6 +157,13 @@ io.on('connection', socket => {
   socket.on('clear-canvas', (roomId: string) => {
     socket.to(roomId).emit('clear-room-canvas')
   })
+
+  socket.on(
+    'undo',
+    ({ canvasState, roomId }: { canvasState: string; roomId: string }) => {
+      socket.to(roomId).emit('undo-room-canvas', canvasState)
+    }
+  )
 
   socket.on('leave-room', () => {
     leaveRoom(socket)

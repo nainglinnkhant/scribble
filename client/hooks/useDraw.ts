@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { drawWithDataURL } from '@/lib/utils'
+
 type AppTouchEvent = TouchEvent
 
 interface Point {
@@ -17,40 +19,20 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const prevPointRef = useRef<Point>()
 
-  const [undoPoints, setUndoPoints] = useState<string[]>([])
-
   const [mouseDown, setMouseDown] = useState(false)
 
   const onInteractStart = () => {
-    const canvasElement = canvasRef.current
-    if (!canvasElement) return
-
-    setUndoPoints(prevState => [...prevState, canvasElement.toDataURL()])
-
     setMouseDown(true)
   }
 
-  const undo = () => {
+  const undo = (undoPoint: string) => {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
 
     const ctx = canvasElement.getContext('2d')
     if (!ctx) return
 
-    const lastUndoPoint = undoPoints[undoPoints.length - 1]
-
-    const img = new Image()
-    img.src = lastUndoPoint
-    img.onload = () => {
-      ctx.clearRect(0, 0, canvasElement.width, canvasElement.height)
-      ctx.drawImage(img, 0, 0)
-    }
-
-    setUndoPoints(prevState => {
-      const newState = [...prevState]
-      newState.pop()
-      return newState
-    })
+    drawWithDataURL(undoPoint, ctx, canvasElement)
   }
 
   const clear = useCallback(() => {
@@ -59,8 +41,6 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
 
     const ctx = canvasElement.getContext('2d')
     if (!ctx) return
-
-    setUndoPoints(prevState => [...prevState, canvasElement.toDataURL()])
 
     ctx.clearRect(0, 0, canvasElement.width, canvasElement.height)
   }, [])
