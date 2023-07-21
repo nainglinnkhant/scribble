@@ -26,6 +26,8 @@ export default function DrawingCanvas() {
   const dashGap = useCanvasStore(state => state.dashGap)
   const user = useUserStore(state => state.user)
 
+  const roomId = params.roomId as string
+
   useEffect(() => {
     if (!user) {
       router.replace('/')
@@ -43,9 +45,9 @@ export default function DrawingCanvas() {
         dashGap,
       }
       draw(drawOptions)
-      socket.emit('draw', { drawOptions, roomId: params.roomId })
+      socket.emit('draw', { drawOptions, roomId })
     },
-    [strokeColor, strokeWidth, dashGap, params.roomId]
+    [strokeColor, strokeWidth, dashGap, roomId]
   )
 
   const { canvasRef, onInteractStart, clear, undo } = useDraw(onDraw)
@@ -54,13 +56,13 @@ export default function DrawingCanvas() {
     const canvasElement = canvasRef.current
     const ctx = canvasElement?.getContext('2d')
 
-    socket.emit('client-ready', params.roomId)
+    socket.emit('client-ready', roomId)
 
     socket.on('get-canvas-state', () => {
       const canvasState = canvasRef.current?.toDataURL()
       if (!canvasState) return
 
-      socket.emit('receive-canvas-state', { canvasState, roomId: params.roomId })
+      socket.emit('receive-canvas-state', { canvasState, roomId })
     })
 
     socket.on('send-canvas-state', (canvasState: string) => {
@@ -86,7 +88,7 @@ export default function DrawingCanvas() {
       socket.off('update-canvas-state')
       socket.off('undo-room-canvas')
     }
-  }, [canvasRef, params.roomId])
+  }, [canvasRef, roomId])
 
   useEffect(() => {
     const setCanvasDimensions = () => {
@@ -114,7 +116,7 @@ export default function DrawingCanvas() {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
 
-    await addUndoPoint(params.roomId as string, canvasElement.toDataURL())
+    await addUndoPoint(roomId, canvasElement.toDataURL())
     onInteractStart()
   }
 
@@ -128,14 +130,14 @@ export default function DrawingCanvas() {
           variant='outline'
           className='rounded-none rounded-bl-md border-0 border-b border-l'
           onClick={async () => {
-            const res = await getLastUndoPoint(params.roomId as string)
+            const res = await getLastUndoPoint(roomId)
             undo(res.lastUndoPoint)
             socket.emit('undo', {
               canvasState: res.lastUndoPoint,
-              roomId: params.roomId,
+              roomId,
             })
 
-            deleteLastUndoPoint(params.roomId as string)
+            deleteLastUndoPoint(roomId)
           }}
         >
           Undo
@@ -148,9 +150,9 @@ export default function DrawingCanvas() {
             const canvasElement = canvasRef.current
             if (!canvasElement) return
 
-            await addUndoPoint(params.roomId as string, canvasElement.toDataURL())
+            await addUndoPoint(roomId, canvasElement.toDataURL())
             clear()
-            socket.emit('clear-canvas', params.roomId)
+            socket.emit('clear-canvas', roomId)
           }}
         >
           Clear
