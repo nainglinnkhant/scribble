@@ -14,10 +14,10 @@ const getLastUndoPoint = (roomId: string) => {
   return roomUndoPoints[roomUndoPoints.length - 1]
 }
 
-const removeLastUndoPoint = (roomId: string) => {
+const deleteLastUndoPoint = (roomId: string) => {
   const room = undoPoints[roomId]
   if (!room) return
   undoPoints[roomId].pop()
 }
 
-export { addUndoPoint, getLastUndoPoint, removeLastUndoPoint }
+export { addUndoPoint, getLastUndoPoint, deleteLastUndoPoint }

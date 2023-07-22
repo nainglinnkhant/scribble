@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
 import type { DrawOptions } from '@/types'
-import { addUndoPoint, deleteLastUndoPoint, getLastUndoPoint } from '@/api'
+import { getLastUndoPoint } from '@/api'
 import { useCanvasStore } from '@/stores/canvasStore'
 import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
@@ -112,11 +112,14 @@ export default function DrawingCanvas() {
     }
   }, [clear])
 
-  const handleInteractStart = async () => {
+  const handleInteractStart = () => {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
 
-    await addUndoPoint(roomId, canvasElement.toDataURL())
+    socket.emit('add-undo-point', {
+      roomId,
+      undoPoint: canvasElement.toDataURL(),
+    })
     onInteractStart()
   }
 
@@ -137,7 +140,7 @@ export default function DrawingCanvas() {
               roomId,
             })
 
-            deleteLastUndoPoint(roomId)
+            socket.emit('delete-last-undo-point', roomId)
           }}
         >
           Undo
@@ -146,11 +149,14 @@ export default function DrawingCanvas() {
         <Button
           variant='outline'
           className='rounded-none rounded-tr-md border-0 border-b border-l'
-          onClick={async () => {
+          onClick={() => {
             const canvasElement = canvasRef.current
             if (!canvasElement) return
 
-            await addUndoPoint(roomId, canvasElement.toDataURL())
+            socket.emit('add-undo-point', {
+              roomId,
+              undoPoint: canvasElement.toDataURL(),
+            })
             clear()
             socket.emit('clear-canvas', roomId)
           }}
