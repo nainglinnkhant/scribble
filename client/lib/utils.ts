@@ -45,3 +45,8 @@ export function drawWithDataURL(
     ctx.drawImage(img, 0, 0)
   }
 }
+
+export function isMac() {
+  if (typeof navigator === 'undefined') return false
+  return navigator.userAgent?.includes('Mac')
+}
