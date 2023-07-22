@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/Separator'
 import ThemeMenuButton from '@/components/ThemeMenuButton'
 import CreateRoomForm from '@/components/CreateRoomForm'
 import JoinRoomButtoon from '@/components/JoinRoomButton'
+import { Button } from '@/components/ui/Button'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,8 +19,8 @@ export default function Home() {
   const roomId = nanoid()
 
   return (
-    <div className='flex h-screen w-full items-start justify-center pt-[13vh]'>
-      <ThemeMenuButton className='fixed right-[5vw] top-5 md:right-5' />
+    <div className='flex h-screen flex-col items-center justify-between pb-5 pt-[13vh]'>
+      <ThemeMenuButton className='fixed right-[5vw] top-5 flex-1 md:right-5' />
 
       <Card className='w-[90vw] max-w-[400px]'>
         <CardHeader>
@@ -41,6 +42,30 @@ export default function Home() {
           <JoinRoomButtoon />
         </CardContent>
       </Card>
+
+      <div>
+        <p className='text-sm text-muted-foreground'>
+          Crafted by{' '}
+          <a
+            href='https://twitter.com/nainglk'
+            target='__blank'
+            rel='noreferrer'
+            className='font-medium underline underline-offset-4'
+          >
+            nainglk
+          </a>
+          . The source code is on{' '}
+          <a
+            href='https://github.com/nainglinnkhant/scribble'
+            target='__blank'
+            rel='noreferrer'
+            className='font-medium underline underline-offset-4'
+          >
+            GitHub
+          </a>
+          .
+        </p>
+      </div>
     </div>
   )
 }
