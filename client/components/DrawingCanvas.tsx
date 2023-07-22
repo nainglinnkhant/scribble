@@ -9,9 +9,9 @@ import { useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
 import { draw, drawWithDataURL } from '@/lib/utils'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
-import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
 import UndoButton from '@/components/UndoButton'
+import ClearButton from '@/components/ClearButton'
 
 export default function DrawingCanvas() {
   const router = useRouter()
@@ -102,14 +102,6 @@ export default function DrawingCanvas() {
     setIsCanvasLoaded(true)
   }, [canvasRef])
 
-  useEffect(() => {
-    socket.on('clear-canvas', clear)
-
-    return () => {
-      socket.off('clear-canvas')
-    }
-  }, [clear, undo, roomId])
-
   const handleInteractStart = () => {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
@@ -129,23 +121,7 @@ export default function DrawingCanvas() {
       <div className='absolute right-[25px] top-[25px] flex select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
         <UndoButton undo={undo} />
 
-        <Button
-          variant='outline'
-          className='rounded-none rounded-tr-md border-0 border-b border-l'
-          onClick={() => {
-            const canvasElement = canvasRef.current
-            if (!canvasElement) return
-
-            socket.emit('add-undo-point', {
-              roomId,
-              undoPoint: canvasElement.toDataURL(),
-            })
-            clear()
-            socket.emit('clear-canvas', roomId)
-          }}
-        >
-          Clear
-        </Button>
+        <ClearButton canvasRef={canvasRef} clear={clear} />
       </div>
 
       {!isCanvasLoaded && (
