@@ -11,10 +11,11 @@ import { draw, drawWithDataURL } from '@/lib/utils'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Button } from '@/components/ui/Button'
 import { Skeleton } from '@/components/ui/Skeleton'
+import UndoButton from '@/components/UndoButton'
 
 export default function DrawingCanvas() {
   const router = useRouter()
-  const params = useParams()
+  const { roomId } = useParams()
 
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -24,8 +25,6 @@ export default function DrawingCanvas() {
   const strokeWidth = useCanvasStore(state => state.strokeWidth)
   const dashGap = useCanvasStore(state => state.dashGap)
   const user = useUserStore(state => state.user)
-
-  const roomId = params.roomId as string
 
   useEffect(() => {
     if (!user) {
@@ -105,20 +104,9 @@ export default function DrawingCanvas() {
 
   useEffect(() => {
     socket.on('clear-canvas', clear)
-    // This socket does undo function
-    socket.on('last-undo-point-from-server', (lastUndoPoint: string) => {
-      undo(lastUndoPoint)
-      socket.emit('undo', {
-        canvasState: lastUndoPoint,
-        roomId,
-      })
-
-      socket.emit('delete-last-undo-point', roomId)
-    })
 
     return () => {
       socket.off('clear-canvas')
-      socket.off('last-undo-point-from-server')
     }
   }, [clear, undo, roomId])
 
@@ -138,16 +126,8 @@ export default function DrawingCanvas() {
       ref={containerRef}
       className='relative flex h-full w-full items-center justify-center'
     >
-      <div className='absolute right-[25px] top-[25px] select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
-        <Button
-          variant='outline'
-          className='rounded-none rounded-bl-md border-0 border-b border-l'
-          onClick={async () => {
-            socket.emit('get-last-undo-point', roomId)
-          }}
-        >
-          Undo
-        </Button>
+      <div className='absolute right-[25px] top-[25px] flex select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
+        <UndoButton undo={undo} />
 
         <Button
           variant='outline'
