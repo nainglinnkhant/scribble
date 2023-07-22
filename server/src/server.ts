@@ -7,24 +7,12 @@ import { z } from 'zod'
 import type { DrawOptions, JoinRoomData } from './types'
 import { joinRoomSchema } from './lib/validations/joinRoom'
 import { addUser, getRoomMembers, getUser, removeUser } from './data/users'
-import { addUndoPoint, getLastUndoPoint, removeLastUndoPoint } from './data/undoPoints'
+import { addUndoPoint, getLastUndoPoint, deleteLastUndoPoint } from './data/undoPoints'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
-
-app.post('/undo-points', (req: Request, res: Response) => {
-  const { roomId, undoPoint } = req.body
-  addUndoPoint(roomId, undoPoint)
-
-  res.status(201).json({
-    data: {
-      roomId,
-      undoPoint,
-    },
-  })
-})
 
 app.get('/last-undo-point/:roomId', (req: Request, res: Response) => {
   const { roomId } = req.params
@@ -34,15 +22,6 @@ app.get('/last-undo-point/:roomId', (req: Request, res: Response) => {
     data: {
       lastUndoPoint,
     },
-  })
-})
-
-app.delete('/last-undo-point/:roomId', (req: Request, res: Response) => {
-  const { roomId } = req.params
-  removeLastUndoPoint(roomId)
-
-  res.status(204).json({
-    data: null,
   })
 })
 
@@ -164,6 +143,17 @@ io.on('connection', socket => {
       socket.to(roomId).emit('undo-room-canvas', canvasState)
     }
   )
+
+  socket.on(
+    'add-undo-point',
+    ({ roomId, undoPoint }: { roomId: string; undoPoint: string }) => {
+      addUndoPoint(roomId, undoPoint)
+    }
+  )
+
+  socket.on('delete-last-undo-point', (roomId: string) => {
+    deleteLastUndoPoint(roomId)
+  })
 
   socket.on('leave-room', () => {
     leaveRoom(socket)
