@@ -12,6 +12,8 @@ import ThemeMenuButton from '@/components/ThemeMenuButton'
 import CreateRoomForm from '@/components/CreateRoomForm'
 import JoinRoomButtoon from '@/components/JoinRoomButton'
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   const roomId = nanoid()
 
