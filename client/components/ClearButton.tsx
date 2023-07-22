@@ -50,7 +50,7 @@ export default function ClearButton({ canvasRef, clear }: ClearButtonProps) {
         <TooltipTrigger asChild>
           <Button
             variant='outline'
-            className='rounded-none rounded-tr-md border-0 border-b border-l'
+            className='rounded-none rounded-tr-[2.8px] border-0 border-b border-l'
             onClick={clearCanvas}
           >
             Clear
