@@ -8,6 +8,10 @@
     "skipLibCheck": true,
     "noImplicitAny": true,
     "outDir": "build",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"]
+    }
   }
 }

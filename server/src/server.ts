@@ -1,13 +1,15 @@
+import 'module-alias/register'
+
 import express from 'express'
 import { Server, type Socket } from 'socket.io'
 import http from 'http'
 import cors from 'cors'
 import { z } from 'zod'
 
-import type { DrawOptions, JoinRoomData } from './types'
-import { joinRoomSchema } from './lib/validations/joinRoom'
-import { addUser, getRoomMembers, getUser, removeUser } from './data/users'
-import { addUndoPoint, getLastUndoPoint, deleteLastUndoPoint } from './data/undoPoints'
+import type { DrawOptions, JoinRoomData } from '@/types'
+import { joinRoomSchema } from '@/lib/validations/joinRoom'
+import { addUser, getRoomMembers, getUser, removeUser } from '@/data/users'
+import { addUndoPoint, getLastUndoPoint, deleteLastUndoPoint } from '@/data/undoPoints'
 
 const app = express()
 
