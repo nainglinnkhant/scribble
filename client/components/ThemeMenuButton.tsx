@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { useTheme } from 'next-themes'
 import { Laptop, Moon, Sun } from 'lucide-react'
 
