@@ -46,7 +46,7 @@ export function drawWithDataURL(
   }
 }
 
-export function isMac() {
+export function isMacOS() {
   if (typeof navigator === 'undefined') return false
   return navigator.userAgent?.includes('Mac')
 }

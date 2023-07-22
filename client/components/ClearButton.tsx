@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import { useHotkeys } from 'react-hotkeys-hook'
 
 import { socket } from '@/lib/socket'
 import { Button } from '@/components/ui/Button'
@@ -21,6 +22,20 @@ interface ClearButtonProps {
 export default function ClearButton({ canvasRef, clear }: ClearButtonProps) {
   const { roomId } = useParams()
 
+  const clearCanvas = () => {
+    const canvasElement = canvasRef.current
+    if (!canvasElement) return
+
+    socket.emit('add-undo-point', {
+      roomId,
+      undoPoint: canvasElement.toDataURL(),
+    })
+    clear()
+    socket.emit('clear-canvas', roomId)
+  }
+
+  useHotkeys('c', clearCanvas)
+
   useEffect(() => {
     socket.on('clear-canvas', clear)
 
@@ -36,17 +51,7 @@ export default function ClearButton({ canvasRef, clear }: ClearButtonProps) {
           <Button
             variant='outline'
             className='rounded-none rounded-tr-md border-0 border-b border-l'
-            onClick={() => {
-              const canvasElement = canvasRef.current
-              if (!canvasElement) return
-
-              socket.emit('add-undo-point', {
-                roomId,
-                undoPoint: canvasElement.toDataURL(),
-              })
-              clear()
-              socket.emit('clear-canvas', roomId)
-            }}
+            onClick={clearCanvas}
           >
             Clear
           </Button>
