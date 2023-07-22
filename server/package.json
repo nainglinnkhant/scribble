@@ -29,8 +29,8 @@
     "zod": "^3.21.4"
   },
   "_moduleAliases": {
-    "@/data": "./src/data",
-    "@/lib": "./src/lib",
-    "@/types": "./src/types"
+    "@/data": "./build/data",
+    "@/lib": "./build/lib",
+    "@/types": "./build/types"
   }
 }
