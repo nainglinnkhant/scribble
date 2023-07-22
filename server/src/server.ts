@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express'
+import express from 'express'
 import { Server, type Socket } from 'socket.io'
 import http from 'http'
 import cors from 'cors'
@@ -12,18 +12,6 @@ import { addUndoPoint, getLastUndoPoint, deleteLastUndoPoint } from './data/undo
 const app = express()
 
 app.use(cors())
-app.use(express.json())
-
-app.get('/last-undo-point/:roomId', (req: Request, res: Response) => {
-  const { roomId } = req.params
-  const lastUndoPoint = getLastUndoPoint(roomId)
-
-  res.status(200).json({
-    data: {
-      lastUndoPoint,
-    },
-  })
-})
 
 const server = http.createServer(app)
 
@@ -143,6 +131,11 @@ io.on('connection', socket => {
       socket.to(roomId).emit('undo-canvas', canvasState)
     }
   )
+
+  socket.on('get-last-undo-point', (roomId: string) => {
+    const lastUndoPoint = getLastUndoPoint(roomId)
+    socket.emit('last-undo-point-from-server', lastUndoPoint)
+  })
 
   socket.on(
     'add-undo-point',
