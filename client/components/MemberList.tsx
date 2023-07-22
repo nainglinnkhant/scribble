@@ -35,7 +35,7 @@ export default function MemberList() {
   }, [toast, setMembers])
 
   return (
-    <div className='my-6'>
+    <div className='my-6 select-none'>
       <h2 className='pb-2.5 font-medium'>Members</h2>
 
       <ScrollArea className='h-48'>
