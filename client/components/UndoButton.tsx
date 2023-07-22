@@ -59,7 +59,7 @@ export default function UndoButton({ undo }: UndoButtonProps) {
         <TooltipTrigger asChild>
           <Button
             variant='outline'
-            className='w-16 rounded-none rounded-bl-md border-0 border-b border-l p-0'
+            className='w-16 rounded-none rounded-bl-md border-0 border-b border-l p-0 focus-within:z-10'
             onClick={undoCanvas}
           >
             {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Undo'}
