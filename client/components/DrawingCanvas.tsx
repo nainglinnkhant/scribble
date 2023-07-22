@@ -62,10 +62,10 @@ export default function DrawingCanvas() {
       const canvasState = canvasRef.current?.toDataURL()
       if (!canvasState) return
 
-      socket.emit('receive-canvas-state', { canvasState, roomId })
+      socket.emit('send-canvas-state', { canvasState, roomId })
     })
 
-    socket.on('send-canvas-state', (canvasState: string) => {
+    socket.on('canvas-state-from-server', (canvasState: string) => {
       if (!ctx || !canvasElement) return
 
       drawWithDataURL(canvasState, ctx, canvasElement)
@@ -76,7 +76,7 @@ export default function DrawingCanvas() {
       draw({ ...drawOptions, ctx })
     })
 
-    socket.on('undo-room-canvas', canvasState => {
+    socket.on('undo-canvas', canvasState => {
       if (!ctx || !canvasElement) return
 
       drawWithDataURL(canvasState, ctx, canvasElement)
@@ -84,9 +84,9 @@ export default function DrawingCanvas() {
 
     return () => {
       socket.off('get-canvas-state')
-      socket.off('send-canvas-state')
+      socket.off('canvas-state-from-server')
       socket.off('update-canvas-state')
-      socket.off('undo-room-canvas')
+      socket.off('undo-canvas')
     }
   }, [canvasRef, roomId])
 
@@ -105,10 +105,10 @@ export default function DrawingCanvas() {
   }, [canvasRef])
 
   useEffect(() => {
-    socket.on('clear-room-canvas', clear)
+    socket.on('clear-canvas', clear)
 
     return () => {
-      socket.off('clear-room-canvas')
+      socket.off('clear-canvas')
     }
   }, [clear])
 

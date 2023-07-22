@@ -115,14 +115,14 @@ io.on('connection', socket => {
   })
 
   socket.on(
-    'receive-canvas-state',
+    'send-canvas-state',
     ({ canvasState, roomId }: { canvasState: string; roomId: string }) => {
       const members = getRoomMembers(roomId)
       const lastMember = members[members.length - 1]
 
       if (!lastMember) return
 
-      socket.to(lastMember.id).emit('send-canvas-state', canvasState)
+      socket.to(lastMember.id).emit('canvas-state-from-server', canvasState)
     }
   )
 
@@ -134,13 +134,13 @@ io.on('connection', socket => {
   )
 
   socket.on('clear-canvas', (roomId: string) => {
-    socket.to(roomId).emit('clear-room-canvas')
+    socket.to(roomId).emit('clear-canvas')
   })
 
   socket.on(
     'undo',
     ({ canvasState, roomId }: { canvasState: string; roomId: string }) => {
-      socket.to(roomId).emit('undo-room-canvas', canvasState)
+      socket.to(roomId).emit('undo-canvas', canvasState)
     }
   )
 
