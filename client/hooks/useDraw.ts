@@ -21,11 +21,11 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
 
   const [mouseDown, setMouseDown] = useState(false)
 
-  const onInteractStart = () => {
+  const onInteractStart = useCallback(() => {
     setMouseDown(true)
-  }
+  }, [])
 
-  const undo = (undoPoint: string) => {
+  const undo = useCallback((undoPoint: string) => {
     const canvasElement = canvasRef.current
     if (!canvasElement) return
 
@@ -33,7 +33,7 @@ export default function useDraw(onDraw: (draw: DrawProps) => void) {
     if (!ctx) return
 
     drawWithDataURL(undoPoint, ctx, canvasElement)
-  }
+  }, [])
 
   const clear = useCallback(() => {
     const canvasElement = canvasRef.current
