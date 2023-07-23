@@ -4,7 +4,7 @@
   "description": "A drawing app which allows multiple users to draw on the same canvas in real-time.",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"cd client && pnpm dev\" \"cd server && pnpm dev\""
+    "dev": "concurrently \"cd server && pnpm dev\" \"cd client && pnpm dev\""
   },
   "keywords": [],
   "author": "Naing Linn Khant",
