@@ -1,13 +1,19 @@
 ## Getting Started
 
-First, run the server:
+Run this command in the root folder.
+
+```bash
+pnpm dev
+```
+
+or
+
+Change the directory into each folder and run.
 
 ```bash
 cd server
 pnpm dev
 ```
-
-and then run the client:
 
 ```bash
 cd client
