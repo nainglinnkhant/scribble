@@ -60,6 +60,7 @@ export default function UndoButton({ undo }: UndoButtonProps) {
           <Button
             variant='outline'
             className='w-16 rounded-none rounded-bl-md border-0 border-b border-l p-0 focus-within:z-10'
+            disabled={isLoading}
             onClick={undoCanvas}
           >
             {isLoading ? <Loader2 className='h-4 w-4 animate-spin' /> : 'Undo'}
