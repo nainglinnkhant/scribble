@@ -97,6 +97,9 @@ io.on('connection', socket => {
 
   socket.on('client-ready', (roomId: string) => {
     const members = getRoomMembers(roomId)
+    // Don't need to request the room's canvas state if a user is the first member
+    if (members.length === 1) return socket.emit('client-loaded')
+
     const adminMember = members[0]
 
     if (!adminMember) return

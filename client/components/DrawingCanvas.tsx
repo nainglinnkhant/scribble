@@ -19,7 +19,7 @@ export default function DrawingCanvas() {
 
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const [isCanvasLoaded, setIsCanvasLoaded] = useState(false)
+  const [isCanvasLoading, setIsCanvasLoading] = useState(true)
 
   const strokeColor = useCanvasStore(state => state.strokeColor)
   const strokeWidth = useCanvasStore(state => state.strokeWidth)
@@ -56,6 +56,10 @@ export default function DrawingCanvas() {
 
     socket.emit('client-ready', roomId)
 
+    socket.on('client-loaded', () => {
+      setIsCanvasLoading(false)
+    })
+
     socket.on('get-canvas-state', () => {
       const canvasState = canvasRef.current?.toDataURL()
       if (!canvasState) return
@@ -67,6 +71,7 @@ export default function DrawingCanvas() {
       if (!ctx || !canvasElement) return
 
       drawWithDataURL(canvasState, ctx, canvasElement)
+      setIsCanvasLoading(false)
     })
 
     socket.on('update-canvas-state', (drawOptions: DrawOptions) => {
@@ -99,7 +104,6 @@ export default function DrawingCanvas() {
     }
 
     setCanvasDimensions()
-    setIsCanvasLoaded(true)
   }, [canvasRef])
 
   const handleInteractStart = () => {
@@ -124,7 +128,7 @@ export default function DrawingCanvas() {
         <ClearButton canvasRef={canvasRef} clear={clear} />
       </div>
 
-      {!isCanvasLoaded && (
+      {isCanvasLoading && (
         <Skeleton className='absolute h-[calc(100%-50px)] w-[calc(100%-50px)]' />
       )}
 
