@@ -11,7 +11,6 @@ import { Separator } from '@/components/ui/Separator'
 import ThemeMenuButton from '@/components/ThemeMenuButton'
 import CreateRoomForm from '@/components/CreateRoomForm'
 import JoinRoomButtoon from '@/components/JoinRoomButton'
-import { Button } from '@/components/ui/Button'
 
 export const dynamic = 'force-dynamic'
 
