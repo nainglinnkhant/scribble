@@ -122,11 +122,13 @@ export default function DrawingCanvas() {
       ref={containerRef}
       className='relative flex h-full w-full items-center justify-center'
     >
-      <div className='absolute right-[25px] top-[25px] flex select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
-        <UndoButton undo={undo} />
+      {!isCanvasLoading && (
+        <div className='absolute right-[25px] top-[25px] flex select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
+          <UndoButton undo={undo} />
 
-        <ClearButton canvasRef={canvasRef} clear={clear} />
-      </div>
+          <ClearButton canvasRef={canvasRef} clear={clear} />
+        </div>
+      )}
 
       {isCanvasLoading && (
         <Skeleton className='absolute h-[calc(100%-50px)] w-[calc(100%-50px)]' />
