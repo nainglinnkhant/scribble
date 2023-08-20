@@ -1,3 +1,22 @@
+## Features
+
+- color picker
+- customizable stroke color, stroke width, and dash gap
+- undo, save actions
+- toast notifications
+- light/dark theme
+
+## Tech Stacks
+
+- Next.js
+- TailwindCSS
+- shadcn ui
+- React Hook Form
+- Zod
+- Zustand
+- Express.js
+- Socket.io
+
 ## Getting Started
 
 Run this command in the root folder.
@@ -21,11 +40,3 @@ pnpm dev
 ```
 
 You can now play around with it.
-
-## Features
-
-- color picker
-- customizable stroke color, stroke width, and dash gap
-- undo, save actions
-- toast notifications
-- light/dark theme
