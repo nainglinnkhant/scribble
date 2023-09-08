@@ -41,7 +41,7 @@ export const metadata = {
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
-  manifest: '/site.webmanifest',
+  manifest: '/manifest.json',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -51,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>{children}</Providers>
 
         <Toaster />
-
+        
         <Analytics />
       </body>
     </html>
