@@ -1,6 +1,7 @@
 {
   "name": "Scribble",
   "short_name": "Scribble",
+  "orientation": "natural",
   "icons": [
     { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
@@ -10,5 +11,26 @@
   "display": "minimal-ui",
   "start_url": "/",
   "description": "Draw on the same canvas with your friends in real-time",
-  "author": "Naing Linn Khant"
+  "author": "Naing Linn Khant",
+  "categories": ["entertainment"],
+  "screenshots": [
+    {
+      "src": "./scriscLbble-light.jpg",
+      "sizes": "358x451",
+      "type": "image/jpeg",
+      "description": "Scribble home screen, light mode"
+    },
+    {
+      "src": "./scribble-dark.jpg",
+      "sizes": "379x497",
+      "type": "image/jpeg",
+      "description": "Scribble home screen, dark mode"
+    },
+    {
+      "src": "./scribble.jpg",
+      "sizes": "401x708",
+      "type": "image/jpeg",
+      "description": "Scribble drawing board"
+    }
+  ]
 }
