@@ -15,8 +15,8 @@ devDependencies:
     specifier: ^8.2.1
     version: 8.2.1
   husky:
-    specifier: ^8.0.0
-    version: 8.0.0
+    specifier: ^8.0.3
+    version: 8.0.3
 
 packages:
 
@@ -666,8 +666,8 @@ packages:
     engines: {node: '>=10.17.0'}
     dev: true
 
-  /husky@8.0.0:
-    resolution: {integrity: sha512-4qbE/5dzNDNxFEkX9MNRPKl5+omTXQzdILCUWiqG/lWIAioiM5vln265/l6I2Zx8gpW8l1ukZwGQeCFbBZ6+6w==}
+  /husky@8.0.3:
+    resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
