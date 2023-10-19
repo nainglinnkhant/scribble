@@ -10,7 +10,17 @@ interface UserState {
   setUser: (user: User) => void
 }
 
+interface JoinPrompt {
+  showDialog: boolean
+  setShowDialog: (value: boolean) => void
+}
+
 export const useUserStore = create<UserState>(set => ({
   user: null,
   setUser: user => set({ user }),
+}))
+
+export const useJoinPrompt = create<JoinPrompt>(set => ({
+  showDialog: false,
+  setShowDialog: value => set({ showDialog: value }),
 }))

@@ -5,13 +5,14 @@ import { useParams, useRouter } from 'next/navigation'
 
 import type { DrawOptions } from '@/types'
 import { useCanvasStore } from '@/stores/canvasStore'
-import { useUserStore } from '@/stores/userStore'
+import { useJoinPrompt, useUserStore } from '@/stores/userStore'
 import { socket } from '@/lib/socket'
 import { draw, drawWithDataURL } from '@/lib/utils'
 import useDraw, { type DrawProps } from '@/hooks/useDraw'
 import { Skeleton } from '@/components/ui/Skeleton'
 import UndoButton from '@/components/UndoButton'
 import ClearButton from '@/components/ClearButton'
+import JoinRoomPrompt from './JoinRoomPrompt'
 
 export default function DrawingCanvas() {
   const router = useRouter()
@@ -21,14 +22,16 @@ export default function DrawingCanvas() {
 
   const [isCanvasLoading, setIsCanvasLoading] = useState(true)
 
+  const user = useUserStore(state => state.user)
+  const dashGap = useCanvasStore(state => state.dashGap)
   const strokeColor = useCanvasStore(state => state.strokeColor)
   const strokeWidth = useCanvasStore(state => state.strokeWidth)
-  const dashGap = useCanvasStore(state => state.dashGap)
-  const user = useUserStore(state => state.user)
+  const setShowDialog = useJoinPrompt(state => state.setShowDialog)
 
   useEffect(() => {
     if (!user) {
-      router.replace('/')
+      if(roomId.length === 21) setShowDialog(true)
+      else router.replace('/')
     }
   }, [router, user])
 
@@ -118,31 +121,37 @@ export default function DrawingCanvas() {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className='relative flex h-full w-full items-center justify-center'
-    >
-      {!isCanvasLoading && (
-        <div className='absolute right-[25px] top-[25px] flex select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
-          <UndoButton undo={undo} />
-
-          <ClearButton canvasRef={canvasRef} clear={clear} />
-        </div>
-      )}
-
-      {isCanvasLoading && (
-        <Skeleton className='absolute h-[calc(100%-50px)] w-[calc(100%-50px)]' />
-      )}
-
-      <canvas
-        id='canvas'
-        ref={canvasRef}
-        onMouseDown={handleInteractStart}
-        onTouchStart={handleInteractStart}
-        width={0}
-        height={0}
-        className='touch-none rounded border bg-white'
+    <>
+      <JoinRoomPrompt
+        roomId={roomId && (typeof roomId === 'string' ? roomId : roomId[0])}
       />
-    </div>
+
+      <div
+        ref={containerRef}
+        className='relative flex h-full w-full items-center justify-center'
+      >
+        {!isCanvasLoading && (
+          <div className='absolute right-[25px] top-[25px] flex select-none rounded-none rounded-bl rounded-tr-[2.5px]'>
+            <UndoButton undo={undo} />
+
+            <ClearButton canvasRef={canvasRef} clear={clear} />
+          </div>
+        )}
+
+        {isCanvasLoading && (
+          <Skeleton className='absolute h-[calc(100%-50px)] w-[calc(100%-50px)]' />
+        )}
+
+        <canvas
+          id='canvas'
+          ref={canvasRef}
+          onMouseDown={handleInteractStart}
+          onTouchStart={handleInteractStart}
+          width={0}
+          height={0}
+          className='touch-none rounded border bg-white'
+        />
+      </div>
+    </>
   )
 }
