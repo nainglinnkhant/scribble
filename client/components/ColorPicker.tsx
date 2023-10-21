@@ -15,9 +15,7 @@ export default function ColorPicker() {
 
   return (
     <div>
-      <Label htmlFor='strokeColor' className='select-none'>
-        Stroke Color
-      </Label>
+      <Label className='select-none'>Stroke Color</Label>
 
       <Popover>
         <PopoverTrigger asChild className='mt-2 w-full'>
@@ -30,11 +28,7 @@ export default function ColorPicker() {
         </PopoverTrigger>
 
         <PopoverContent className='w-fit'>
-          <HexAlphaColorPicker
-            id='strokeColor'
-            color={strokeColor}
-            onChange={setStrokeColor}
-          />
+          <HexAlphaColorPicker color={strokeColor} onChange={setStrokeColor} />
         </PopoverContent>
       </Popover>
     </div>

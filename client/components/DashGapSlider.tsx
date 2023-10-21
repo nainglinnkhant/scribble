@@ -10,13 +10,12 @@ export default function DashGapSlider() {
   return (
     <div>
       <div className='mb-4 flex select-none items-center justify-between'>
-        <Label htmlFor='strokeWidth'>Dash Gap</Label>
+        <Label>Dash Gap</Label>
 
         <span className='px-2 py-0.5 text-sm text-muted-foreground'>{dashGap[0]}</span>
       </div>
 
       <Slider
-        id='strokeWidth'
         min={0}
         max={50}
         step={1}
