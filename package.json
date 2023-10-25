@@ -11,7 +11,7 @@
   "author": "Naing Linn Khant",
   "license": "ISC",
   "devDependencies": {
-    "@commitlint/cli": "^17.8.0",
+    "@commitlint/cli": "^18.1.0",
     "@commitlint/config-conventional": "^18.0.0",
     "concurrently": "^8.2.2",
     "husky": "^8.0.3"
