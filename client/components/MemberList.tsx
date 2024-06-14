@@ -1,16 +1,14 @@
 'use client'
 
 import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 import type { Notification } from '@/types'
 import { useMembersStore } from '@/stores/membersStore'
 import { socket } from '@/lib/socket'
-import { useToast } from '@/components/ui/useToast'
 import { ScrollArea } from '@/components/ui/ScrollArea'
 
 export default function MemberList() {
-  const { toast } = useToast()
-
   const [members, setMembers] = useMembersStore(state => [
     state.members,
     state.setMembers,
@@ -22,8 +20,7 @@ export default function MemberList() {
     })
 
     socket.on('send-notification', ({ title, message }: Notification) => {
-      toast({
-        title,
+      toast(title, {
         description: message,
       })
     })
@@ -32,7 +29,7 @@ export default function MemberList() {
       socket.off('update-members')
       socket.off('send-notification')
     }
-  }, [toast, setMembers])
+  }, [setMembers])
 
   return (
     <div className='my-6 select-none'>

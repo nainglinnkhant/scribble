@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 
-import { Toaster } from '@/components/ui/Toaster'
+import { Toaster } from '@/components/ui/Sonner'
 import { Providers } from './providers'
 import './globals.css'
 

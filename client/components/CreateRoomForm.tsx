@@ -6,13 +6,13 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 import type { RoomJoinedData } from '@/types'
 import { useUserStore } from '@/stores/userStore'
 import { useMembersStore } from '@/stores/membersStore'
 import { socket } from '@/lib/socket'
 import { createRoomSchema } from '@/lib/validations/createRoom'
-import { useToast } from '@/components/ui/useToast'
 import { Button } from '@/components/ui/Button'
 import {
   Form,
@@ -33,7 +33,6 @@ type CreatRoomForm = z.infer<typeof createRoomSchema>
 
 export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
   const router = useRouter()
-  const { toast } = useToast()
 
   const setUser = useUserStore(state => state.setUser)
   const setMembers = useMembersStore(state => state.setMembers)
@@ -60,8 +59,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
     })
 
     function handleErrorMessage({ message }: { message: string }) {
-      toast({
-        title: 'Failed to join room!',
+      toast('Failed to join room!', {
         description: message,
       })
     }
@@ -75,7 +73,7 @@ export default function CreateRoomForm({ roomId }: CreateRoomFormProps) {
       socket.off('room-not-found')
       socket.off('invalid-data', handleErrorMessage)
     }
-  }, [router, toast, setUser, setMembers])
+  }, [router, setUser, setMembers])
 
   return (
     <Form {...form}>
