@@ -6,7 +6,7 @@
 - toast notifications
 - light/dark theme
 
-## Tech Stacks
+## Tech Stack
 
 - Next.js
 - TailwindCSS
