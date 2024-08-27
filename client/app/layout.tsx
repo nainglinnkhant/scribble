@@ -15,7 +15,7 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  metadataBase: new URL('https://scribble-delta.vercel.app'),
+  metadataBase: new URL('https://scribble.nainglinnkhant.com'),
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
@@ -29,7 +29,8 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: ['/og'],
     siteName: TITLE,
-    url: 'https://scribble-delta.vercel.app',
+    url: 'https://scribble.nainglinnkhant.com',
+    locale: 'en_US',
   },
   icons: {
     icon: '/favicon.ico',
