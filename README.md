@@ -1,3 +1,9 @@
+# Scribble
+
+A drawing app which allows multiple users to draw on the same canvas in real-time.
+
+<img width="1440" alt="Screenshot 2024-08-28 at 1 03 58 AM" src="https://github.com/user-attachments/assets/2828be9d-a6d0-4a44-9704-5057e548372d">
+
 ## Features
 
 - color picker
@@ -6,7 +12,7 @@
 - toast notifications
 - light/dark theme
 
-## Tech Stacks
+## Tech Stack
 
 - Next.js
 - TailwindCSS

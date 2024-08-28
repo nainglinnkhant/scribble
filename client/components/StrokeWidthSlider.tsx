@@ -13,7 +13,7 @@ export default function StrokeWidthSlider() {
   return (
     <div>
       <div className='mb-4 flex select-none items-center justify-between'>
-        <Label htmlFor='strokeWidth'>Stroke Width</Label>
+        <Label>Stroke Width</Label>
 
         <span className='px-2 py-0.5 text-sm text-muted-foreground'>
           {strokeWidth[0]}
@@ -21,7 +21,6 @@ export default function StrokeWidthSlider() {
       </div>
 
       <Slider
-        id='strokeWidth'
         min={1}
         max={50}
         step={1}

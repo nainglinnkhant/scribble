@@ -15,26 +15,20 @@ export default function ColorPicker() {
 
   return (
     <div>
-      <Label htmlFor='strokeColor' className='select-none'>
-        Stroke Color
-      </Label>
+      <Label className='select-none'>Stroke Color</Label>
 
       <Popover>
         <PopoverTrigger asChild className='mt-2 w-full'>
-          <Button className='h-8 w-full rounded-md p-0 ring-2 ring-border ring-offset-2'>
+          <Button className='h-8 w-full rounded-md p-0 ring-2 ring-border ring-offset-2 dark:focus-visible:ring-slate-700'>
             <div
-              className='h-full w-full rounded-md'
+              className='h-full w-full rounded-[5px]'
               style={{ background: strokeColor }}
             />
           </Button>
         </PopoverTrigger>
 
         <PopoverContent className='w-fit'>
-          <HexAlphaColorPicker
-            id='strokeColor'
-            color={strokeColor}
-            onChange={setStrokeColor}
-          />
+          <HexAlphaColorPicker color={strokeColor} onChange={setStrokeColor} />
         </PopoverContent>
       </Popover>
     </div>
