@@ -32,6 +32,16 @@ export default function DrawingCanvas() {
     }
   }, [router, user])
 
+  useEffect(() => {
+    function preventRefresh(e: BeforeUnloadEvent) {
+      e.preventDefault()
+    }
+
+    window.addEventListener('beforeunload', preventRefresh)
+
+    return () => window.removeEventListener('beforeunload', preventRefresh)
+  }, [])
+
   const onDraw = useCallback(
     ({ ctx, currentPoint, prevPoint }: DrawProps) => {
       const drawOptions = {
